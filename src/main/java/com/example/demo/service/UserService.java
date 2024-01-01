@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -61,13 +62,13 @@ public class UserService{
     public List<UserDTO> findByEmail(String email) {
         PersonalDataDTO userData =
                 mapper.personalDataToPersonalDataDto(userDataRepository.findByEmail(email));
-        List<User> user;
+        User user;
         if (userData == null) {
             return new ArrayList<>();
         } else {
             user = userRepository.findByPersonalData(mapper.personalDataDtoToPersonalData(userData));
         }
-        return mapper.listOfUserToListOfUserDto(user);
+        return mapper.listOfUserToListOfUserDto((List<User>) user);
     }
 
 
@@ -91,5 +92,29 @@ public class UserService{
         user.setVerified(true);
         userRepository.save(mapper.userDtoToUser(user));
         return VALID_MESSAGE;
+    }
+
+    public void registerUser(User user) {
+        PersonalData personalData = user.getPersonalData();
+        if(userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
+            throw new UserAlreadyExistsException("Account already created on this Email");
+        } else {
+            var newUserData = PersonalData.builder().email(user.getPersonalData().getEmail()).build();
+            userDataRepository.save(newUserData);
+            var newUser =
+                    User.builder()
+                            .login(user.getLogin())
+                            .password(passwordEncoder.encode(user.getPassword()))
+                            .personalData(newUserData)
+                            .registrationDateTime(java.time.ZonedDateTime.now())
+                            .build();
+            userRepository.save(newUser);
+        }
+    }
+    public void loginUser(User user) throws LoginException {
+        User oldUser = userRepository.findByPersonalData(userDataRepository.findByEmail(user.getPersonalData().getEmail()));
+        if(!passwordEncoder.matches(user.getPassword(), oldUser.getPassword())) {
+            throw new LoginException("Wrong LogIn details " + user.getPassword().matches(oldUser.getPassword()));
+        }
     }
 }
