@@ -13,6 +13,8 @@ import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserDataRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -139,6 +141,16 @@ public class UserService{
         props.put("mail.smtp.port", 587);
 
         return mailSender;
+    }
+
+    public void sendMessage(PersonalData personalData) {
+        String link = "http://localhost:8080/users/reset" + personalData.getEmail();
+        MailSender mailSender = createMailSender();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(personalData.getEmail());
+        message.setSubject("Confirm Email");
+        message.setText("confirm your email with link " + link);
+        mailSender.send(message);
     }
 
     public void resetPassword(String email, User newUser) {

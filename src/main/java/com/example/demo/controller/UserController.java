@@ -4,8 +4,6 @@ import com.example.demo.entity.PersonalData;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -59,13 +57,7 @@ public class UserController {
 
     @PostMapping("/confirmEmail")
     public String confirmEmail(@ModelAttribute("confirmEmail") PersonalData personalData) {
-        String link = "http://localhost:8080/users/reset" + personalData.getEmail();
-        MailSender mailSender = userService.createMailSender();
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(personalData.getEmail());
-        message.setSubject("Confirm Email");
-        message.setText("confirm your email with link " + link);
-        mailSender.send(message);
+        userService.sendMessage(personalData);
 
         return "confirmEmailWaiting";
     }
