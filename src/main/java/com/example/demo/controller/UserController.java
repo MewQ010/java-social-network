@@ -2,18 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.PersonalData;
 import com.example.demo.entity.User;
-import com.example.demo.repository.UserDataRepository;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.passay.PasswordData;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.LoginException;
 
@@ -57,16 +52,34 @@ public class UserController {
     }
 
     @GetMapping("/confirmEmail")
-    public String changePassword(Model model, PersonalData personalData) {
+    public String confirmEmail(Model model, PersonalData personalData) {
         model.addAttribute("confirmEmail", new PersonalData());
-
         return "confirmEmail";
     }
 
     @PostMapping("/confirmEmail")
-    public String changePassword(@ModelAttribute("confirmEmail") PasswordData personalData) {
+    public String confirmEmail(@ModelAttribute("confirmEmail") PersonalData personalData) {
+        String link = "http://localhost:8080/users/reset" + personalData.getEmail();
+        MailSender mailSender = userService.createMailSender();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(personalData.getEmail());
+        message.setSubject("Confirm Email");
+        message.setText("confirm your email with link " + link);
+        mailSender.send(message);
 
-        return "resetPassword";
+        return "confirmEmailWaiting";
+    }
+
+    @GetMapping("/reset{email}")
+    public String changePassword(@PathVariable String email, Model model, User user) {
+        model.addAttribute("resetPassword", new User());
+        return "changePassword";
+    }
+
+    @PostMapping("/reset{email}")
+    public String changePassword(@PathVariable String email, @ModelAttribute("resetPassword") User user) {
+        userService.resetPassword(email, user);
+        return "redirect:/users";
     }
 
 }

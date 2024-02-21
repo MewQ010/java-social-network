@@ -11,17 +11,13 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
-            <h1 class="text-center">LogIn Account</h1>
+            <h1 class="text-center">Email Confirm</h1>
             <div class="card-body">
 
-                <form method="POST" name="newUser" th:object="${User}">
+                <form method="POST" name="newUser" th:object="${PersonalData}">
 
                     <div class="form-group">
-                        <input type="email" name="email" th:field="${user.personalData.email}" class="form-control" required placeholder="Entry Email">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="text" minlength="4" maxlength="24" name="password" th:field="${users.password}" required class="form-control" placeholder="Entry Password">
+                        <input type="email" name="email" th:field="${personalData.email}" class="form-control" required placeholder="Entry Email">
                     </div>
 
                     <div class="box-footer">
@@ -31,8 +27,8 @@
                     </div>
 
                     <div class="login">
-                        <a th:href="@{/users/register}" class="register">Зареєструватись /</a>
-                        <a th:href="@{/users/confirmEmail}" class="forgotPassword">Забули пароль</a>
+                        <a th:href="@{/users/login}" class="login">Вхід /</a>
+                        <a th:href="@{/users/register}" class="register">Зареєструватись</a>
                     </div>
 
                 </form>

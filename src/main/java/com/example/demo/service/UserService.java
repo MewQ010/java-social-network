@@ -13,6 +13,8 @@ import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserDataRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 
 import static com.example.demo.constants.TextConstants.*;
 
@@ -32,7 +35,6 @@ public class UserService{
     private final VerificationTokenRepository tokenRepository;
     private final UserMapper mapper;
     private final RoleRepository roleRepository;
-
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -95,7 +97,9 @@ public class UserService{
     }
 
     public void registerUser(User user) {
-        PersonalData personalData = user.getPersonalData();
+        if(userRepository.findByLogin(user.getLogin()) != null) {
+            throw new UserAlreadyExistsException("Account already created on this UserName");
+        }
         if(userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
             throw new UserAlreadyExistsException("Account already created on this Email");
         } else {
@@ -114,7 +118,33 @@ public class UserService{
     public void loginUser(User user) throws LoginException {
         User oldUser = userRepository.findByPersonalData(userDataRepository.findByEmail(user.getPersonalData().getEmail()));
         if(!passwordEncoder.matches(user.getPassword(), oldUser.getPassword())) {
-            throw new LoginException("Wrong LogIn details " + user.getPassword().matches(oldUser.getPassword()));
+            throw new LoginException("Wrong Login details " + user.getPassword().matches(oldUser.getPassword()));
         }
+    }
+
+    public JavaMailSender createMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
+        mailSender.setUsername("java.intita@gmail.com");
+        mailSender.setPassword("csug gyry cmzr yeeb");
+
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", 587);
+
+        return mailSender;
+    }
+
+    public void resetPassword(String email, User newUser) {
+        PersonalData personalData = userDataRepository.findByEmail(email);
+        User user = userRepository.findByPersonalData(personalData);
+        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        userRepository.save(user);
     }
 }
