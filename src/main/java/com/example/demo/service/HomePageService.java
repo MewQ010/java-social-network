@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class HomePageService {
@@ -15,6 +17,9 @@ public class HomePageService {
 
     public Page<Post> getAllPosts(Pageable pageable){
         return postRepository.findAll(pageable);
+    }
+    public List<Post> getAllPosts(){
+        return postRepository.findAll();
     }
 
 }

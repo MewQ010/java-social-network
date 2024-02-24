@@ -1,17 +1,15 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Post;
 import com.example.demo.exception.UserAlreadyExistsException;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.entity.PersonalData;
 import com.example.demo.entity.User;
 import com.example.demo.entity.dto.PersonalDataDTO;
 import com.example.demo.entity.dto.UserDTO;
+import com.example.demo.repository.*;
 import com.example.demo.request.RegistrationRequest;
 import com.example.demo.entity.VerificationToken;
-import com.example.demo.repository.VerificationTokenRepository;
-import com.example.demo.repository.RoleRepository;
-import com.example.demo.repository.UserDataRepository;
-import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -37,6 +35,7 @@ public class UserService{
     private final VerificationTokenRepository tokenRepository;
     private final UserMapper mapper;
     private final RoleRepository roleRepository;
+    private final PostRepository postRepository;
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -99,10 +98,10 @@ public class UserService{
     }
 
     public void registerUser(User user) {
-        if(userRepository.findByLogin(user.getLogin()) != null) {
+        if(userRepository.findByLogin(user.getLogin()) == null) {
             throw new UserAlreadyExistsException("Account already created on this UserName");
         }
-        if(userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
+        if(!userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
             throw new UserAlreadyExistsException("Account already created on this Email");
         } else {
             var newUserData = PersonalData.builder().email(user.getPersonalData().getEmail()).build();
@@ -110,7 +109,8 @@ public class UserService{
             var newUser =
                     User.builder()
                             .login(user.getLogin())
-                            .password(passwordEncoder.encode(user.getPassword()))
+//                            .password(passwordEncoder.encode(user.getPassword()))
+                            .password(user.getPassword())
                             .personalData(newUserData)
                             .registrationDateTime(java.time.ZonedDateTime.now())
                             .build();
@@ -119,7 +119,10 @@ public class UserService{
     }
     public void loginUser(User user) throws LoginException {
         User oldUser = userRepository.findByPersonalData(userDataRepository.findByEmail(user.getPersonalData().getEmail()));
-        if(!passwordEncoder.matches(user.getPassword(), oldUser.getPassword())) {
+//        if(!passwordEncoder.matches(user.getPassword(), oldUser.getPassword())) {
+//            throw new LoginException("Wrong Login details " + user.getPassword().matches(oldUser.getPassword()));
+//        }
+        if(!user.getPassword().equals(oldUser.getPassword())) {
             throw new LoginException("Wrong Login details " + user.getPassword().matches(oldUser.getPassword()));
         }
     }
@@ -158,5 +161,9 @@ public class UserService{
         User user = userRepository.findByPersonalData(personalData);
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(user);
+    }
+
+    public void addPost(Post post) {
+        postRepository.save(post);
     }
 }
