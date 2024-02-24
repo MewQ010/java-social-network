@@ -16,10 +16,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="post: ${posts}">
-        <td th:text="${post.header}"></td>
-        <td th:text="${post.description}"></td>
-    </tr>
+    <th:block th:each="post, index : ${posts}">
+        <li>
+            Post Title: <span th:text="${post.header}"></span><br>
+            Post Content: <span th:text="${post.description}"></span><br>
+            User Name: <span th:text="${userNames[__${index.index}__]}"></span>
+        </li>
+    </th:block>
     </tbody>
 
     <div class="login">

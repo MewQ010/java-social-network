@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.LoginException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -88,10 +90,20 @@ public class UserController {
 
     @GetMapping("/posts")
     public String postView(Model model, HttpSession session) {
-        model.addAttribute("posts", homePageService.getAllPosts());
-        model.addAttribute("post", new Post());
         Long id = (Long) session.getAttribute("userId");
         session.setAttribute("userId", id);
+
+        List<Post> posts = homePageService.getAllPosts();
+        List<String> userNames = new ArrayList<>();
+
+        for (Post post : posts) {
+            Optional<User> user = userRepository.findById(post.getUserId());
+            userNames.add(user.get().getLogin());
+        }
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("userNames", userNames);
+
         return "postView";
     }
 
@@ -106,11 +118,8 @@ public class UserController {
     @PostMapping("/addPost")
     public String addPost(@ModelAttribute("post") Post post, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
+        post.setUserId(userId);
         userService.addPost(post);
-        Optional<User> user = userRepository.findById(userId);
-        Optional<PersonalData> personalData = userDataRepository.findById(user.get().getId());
-        personalData.ifPresent(data -> data.getPosts().add(post));
-        personalData.ifPresent(userDataRepository::save);
         return "redirect:/users/posts";
     }
 

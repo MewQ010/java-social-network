@@ -26,6 +26,8 @@ public class Post {
     private Long id;
     @Column(name = "header")
     private String header;
+    @Column(name = "user_id")
+    private Long userId;
     @Column(name = "description")
     private String description;
 
