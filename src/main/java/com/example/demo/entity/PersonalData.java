@@ -3,16 +3,7 @@ package com.example.demo.entity;
 import java.time.LocalDate;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,9 +24,8 @@ public class PersonalData {
     @OneToOne
     @JoinColumn(name = "telephone_id")
     private Telephone telephone;
-    @OneToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Post> posts;
     @ManyToMany
     @JoinTable(
             name = "personal_data_paragraphs_relations",

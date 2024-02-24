@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.LoginException;
+import java.util.Optional;
 
 
 @Controller
@@ -97,7 +98,6 @@ public class UserController {
     @GetMapping("/addPost")
     public String addPost(Model model, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-
         model.addAttribute("userId", userId);
         model.addAttribute("post", new Post());
         return "postAddPage";
@@ -106,8 +106,11 @@ public class UserController {
     @PostMapping("/addPost")
     public String addPost(@ModelAttribute("post") Post post, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        post.setId(userId);
         userService.addPost(post);
+        Optional<User> user = userRepository.findById(userId);
+        Optional<PersonalData> personalData = userDataRepository.findById(user.get().getId());
+        personalData.ifPresent(data -> data.getPosts().add(post));
+        personalData.ifPresent(userDataRepository::save);
         return "redirect:/users/posts";
     }
 

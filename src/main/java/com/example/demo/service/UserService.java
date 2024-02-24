@@ -101,7 +101,7 @@ public class UserService{
         if(userRepository.findByLogin(user.getLogin()) == null) {
             throw new UserAlreadyExistsException("Account already created on this UserName");
         }
-        if(!userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
+        if(userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
             throw new UserAlreadyExistsException("Account already created on this Email");
         } else {
             var newUserData = PersonalData.builder().email(user.getPersonalData().getEmail()).build();
