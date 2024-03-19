@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Search Result</title>
+    <link th:href="@{/css/postView.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+<h2 class="posts__title">User Search Result</h2>
+    <div class="post__box box-1" th:each="user : ${users}">
+        <div  class="profile__img-box box-1">
+            <a th:href="@{profile{login}(login=${user.login})}" class="user_link">
+            <img th:src="@{'data:image/jpeg;base64,' + ${base64Image}}" alt="Image" class="profile__img">
+            </a>
+        </div>
+        <div class="user__links">
+    <div class="user_link link-1">
+        <a th:href="@{profile{login}(login=${user.login})}" th:text="${user.login}" class="username user-1"></a>
+    </div>
+        <div class="user_link link-2">
+            <a th:href="@{profile{login}(login=${user.login})}" th:text="${user.personalData.firstName} + ' ' + ${user.personalData.lastName}" class="username user-1"></a>
+        </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+

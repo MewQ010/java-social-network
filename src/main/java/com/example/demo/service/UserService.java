@@ -1,34 +1,39 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Post;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.S3Object;
+import com.example.demo.entity.*;
 import com.example.demo.exception.UserAlreadyExistsException;
 import com.example.demo.mapper.UserMapper;
-import com.example.demo.entity.PersonalData;
-import com.example.demo.entity.User;
 import com.example.demo.entity.dto.PersonalDataDTO;
 import com.example.demo.entity.dto.UserDTO;
 import com.example.demo.repository.*;
 import com.example.demo.request.RegistrationRequest;
-import com.example.demo.entity.VerificationToken;
+import com.example.demo.validator.PersonalDataValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.login.LoginException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Properties;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 import static com.example.demo.constants.TextConstants.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserService{
+
     private final UserDataRepository userDataRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -36,6 +41,16 @@ public class UserService{
     private final UserMapper mapper;
     private final RoleRepository roleRepository;
     private final PostRepository postRepository;
+    private final TelephoneCodeRepository telephoneCodeRepository;
+    private final PersonalDataValidator personalDataValidator;
+    private final TelephoneRepository telephoneRepository;
+
+
+    @Autowired
+    S3Service s3Service;
+
+    @Autowired
+    AmazonS3 amazonS3;
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -97,20 +112,20 @@ public class UserService{
         return VALID_MESSAGE;
     }
 
-    public void registerUser(User user) {
-        if(userRepository.findByLogin(user.getLogin()) == null) {
+    public void registerUser(User user) throws UserAlreadyExistsException, LoginException {
+        personalDataValidator.isValid(user.getPersonalData());
+        if(!userRepository.findByLogin(user.getLogin()).isEmpty()) {
             throw new UserAlreadyExistsException("Account already created on this UserName");
         }
         if(userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
-            throw new UserAlreadyExistsException("Account already created on this Email");
+            throw new LoginException();
         } else {
-            var newUserData = PersonalData.builder().email(user.getPersonalData().getEmail()).build();
+            var newUserData = PersonalData.builder().email(user.getPersonalData().getEmail()).profileImageUrl("def-profile-img.jpg").build();
             userDataRepository.save(newUserData);
             var newUser =
                     User.builder()
                             .login(user.getLogin())
-//                            .password(passwordEncoder.encode(user.getPassword()))
-                            .password(user.getPassword())
+                            .password(passwordEncoder.encode(user.getPassword()))
                             .personalData(newUserData)
                             .registrationDateTime(java.time.ZonedDateTime.now())
                             .build();
@@ -118,42 +133,13 @@ public class UserService{
         }
     }
     public void loginUser(User user) throws LoginException {
-        User oldUser = userRepository.findByPersonalData(userDataRepository.findByEmail(user.getPersonalData().getEmail()));
-//        if(!passwordEncoder.matches(user.getPassword(), oldUser.getPassword())) {
-//            throw new LoginException("Wrong Login details " + user.getPassword().matches(oldUser.getPassword()));
-//        }
-        if(!user.getPassword().equals(oldUser.getPassword())) {
-            throw new LoginException("Wrong Login details " + user.getPassword().matches(oldUser.getPassword()));
+        if(!userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
+            throw new LoginException("We can't find user with this email");
         }
-    }
-
-    public JavaMailSender createMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-        mailSender.setUsername("java.intita@gmail.com");
-        mailSender.setPassword("csug gyry cmzr yeeb");
-
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", 587);
-
-        return mailSender;
-    }
-
-    public void sendMessage(PersonalData personalData) {
-        String link = "http://localhost:8080/users/reset" + personalData.getEmail();
-        MailSender mailSender = createMailSender();
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(personalData.getEmail());
-        message.setSubject("Confirm Email");
-        message.setText("confirm your email with link " + link);
-        mailSender.send(message);
+        User oldUser = userRepository.findByPersonalData(userDataRepository.findByEmail(user.getPersonalData().getEmail()));
+        if(!passwordEncoder.matches(user.getPassword(), oldUser.getPassword())) {
+            throw new LoginException("Wrong Password");
+        }
     }
 
     public void resetPassword(String email, User newUser) {
@@ -165,5 +151,21 @@ public class UserService{
 
     public void addPost(Post post) {
         postRepository.save(post);
+    }
+
+    public void savePersonalData(PersonalData exitingPersonalData, PersonalData newPersonalData, String profileImage) throws LoginException {
+        TelephoneCode newTelephoneCode = telephoneCodeRepository.findByCode(newPersonalData.getTelephone().getTelephoneCode().getCode());
+        Telephone telephone = Telephone.builder().telephoneNumber(newPersonalData.getTelephone().getTelephoneNumber()).telephoneCode(newTelephoneCode).build();
+        telephoneRepository.save(telephone);
+        personalDataValidator.isValid(newPersonalData);
+
+        exitingPersonalData.setFirstName(newPersonalData.getFirstName());
+        exitingPersonalData.setLastName(newPersonalData.getLastName());
+        exitingPersonalData.setDateOfBirth(newPersonalData.getDateOfBirth());
+        exitingPersonalData.setProfileImageUrl(profileImage);
+        exitingPersonalData.setTelephone(telephone);
+        exitingPersonalData.setDescription(newPersonalData.getDescription());
+
+        userDataRepository.save(exitingPersonalData);
     }
 }

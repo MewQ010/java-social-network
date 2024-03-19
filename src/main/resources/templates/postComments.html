@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat between <span th:text="${sender}"></span> and <span th:text="${receiver}"></span></title>
+    <link th:href="@{/css/chat.css}" rel="stylesheet"/>
+</head>
+<html>
+<body>
+<div class="chat-container">
+    <div class="chat-header">
+        <h3 th:text="${post.header}"></h3>
+    </div>
+    <div th:each="comment : ${comments}" class="chat-content" id="chat-box">
+        <div class="chat-message-left">
+            <div class="chat-message-bubble" th:text="${comment.sender}"></div>
+            <div class="chat-message-bubble" th:text="${comment.comment}"></div>
+        </div>
+    </div>
+    <form action="/posts/send" method="post" class="chat-input">
+        <input type="hidden" name="sender" th:value="${user.login}">
+        <input type="hidden" name="postId" th:value="${post.id}">
+        <input type="text" name="content" placeholder="Type your message..." required>
+        <button class="send__btn" type="submit">Send</button>
+    </form>
+</div>
+</body>
+</html>
+

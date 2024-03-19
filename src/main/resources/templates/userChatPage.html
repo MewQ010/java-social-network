@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link th:href="@{/css/userChat.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="posts__title">User Chats</h2>
+    <div class="post__box box-1" th:each="user, index : ${userChat}">
+        <div  class="profile__img-box box-1">
+            <a th:href="@{profile{login}(login=${user.login})}" class="user_link">
+                <img th:src="@{'data:image/jpeg;base64,' + ${base64Images[__${index.index}__]}}" alt="Image" class="profile__img">
+            </a>
+        </div>
+        <div class="user__links">
+            <div class="user_link link-1">
+                <a th:href="@{/chat/{login} (login=${user.login})}" th:text="${user.login}" class="username user-1"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

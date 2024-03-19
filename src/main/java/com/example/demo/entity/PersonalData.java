@@ -71,4 +71,6 @@ public class PersonalData {
     private LocalDate dateOfBirth;
     @Column(name = "profile_image_url")
     private String profileImageUrl;
+    @Column(name = "description")
+    private String description;
 }

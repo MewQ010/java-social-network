@@ -19,6 +19,18 @@ spring:
           auth: true
         starttls:
           enable: true
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAU6GDWNCHBIIRV4XK
+      secretKey: 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
+    region:
+      static: eu-north-1
+    stack:
+      auto: false
+application:
+  bucket:
+    name: intitajavaproject
 server:
   port: 8080
 spring-doc:

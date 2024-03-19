@@ -3,42 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Student</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
+    <link th:href="@{/css/registration.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
-            <h1 class="text-center">LogIn Account</h1>
-            <div class="card-body">
+    <h1 class="text-center">Вхід</h1>
+    <div class="registration__box">
 
-                <form method="POST" name="newUser" th:object="${User}">
-
-                    <div class="form-group">
-                        <input type="email" name="email" th:field="${user.personalData.email}" class="form-control" required placeholder="Entry Email">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="text" minlength="4" maxlength="24" name="password" th:field="${users.password}" required class="form-control" placeholder="Entry Password">
-                    </div>
-
-                    <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">
-                            Submit
-                        </button>
-                    </div>
-
-                    <div class="login">
-                        <a th:href="@{/users/register}" class="register">Зареєструватись /</a>
-                        <a th:href="@{/users/confirmEmail}" class="forgotPassword">Забули пароль</a>
-                    </div>
-
-                </form>
-
-            </div>
+        <div class="text-center" style="color: red" th:if="${error != null}">
+            [[${error}]]
         </div>
+
+        <form method="POST" name="newUser" class="newUser" th:object="${User}">
+
+            <div class="form-group">
+                <input type="email" name="email" th:field="${users.personalData.email}" class="form-control" placeholder="Entry Email">
+            </div>
+
+            <div class="form-group">
+                <input type="text" minlength="4" maxlength="24" name="password" th:field="${users.password}" class="form-control" placeholder="Entry Password">
+            </div>
+
+            <div class="box-footer">
+                <button type="submit" class="btn btn-primary">
+                    Submit
+                </button>
+            </div>
+
+            <div class="login">
+                <a th:href="@{/users/register}" class="login">Реєстрація /</a>
+                <a th:href="@{/users/confirmEmail}" class="login"> Забули пароль</a>
+            </div>
+
+        </form>
+
     </div>
 </div>
 </body>

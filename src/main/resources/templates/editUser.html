@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Student</title>
+    <link th:href="@{/css/registration.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+      <h1 class="text-center">Update Account</h1>
+      <div class="card-body">
+
+        <form enctype="multipart/form-data" action="editUser" method="POST" name="newPersonalData" th:object="${personalData}">
+
+          <div class="form-group profile-img">
+            <input type="file" name="file">
+          </div>
+
+          <div class="form-group">
+            <input type="text" name="firstName" th:field="${personal_data.firstName}" class="form-control" placeholder="Entry First Name">
+          </div>
+
+          <div class="form-group">
+            <input type="text" name="lastName" th:field="${personal_data.lastName}" class="form-control" placeholder="Entry Last Name">
+          </div>
+
+          <div class="form-group">
+            <textarea id="content" name="content" rows="4" required th:field="${personal_data.description}" placeholder="Add Description" class="form-control"></textarea>
+          </div>
+
+          <div class="form-group">
+            <input type="date" name="dateOfBirth" th:field="${personal_data.dateOfBirth}" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <select class="form-control-3" id="telephoneCode" th:field="${personal_data.telephone.telephoneCode.code}">
+              <option class="form-control" name="telephoneCode"
+                      th:each="telephone_code: ${telephone_codes}"
+                      th:value="${telephone_code.code}"
+                      th:text="${telephone_code.code}"
+                      th:field="${personal_data.telephone.telephoneCode.code}">
+              </option>
+            </select>
+            <input minlength="7" maxlength="12" type="tel" name="telephoneNumber" th:field="${personal_data.telephone.telephoneNumber}" class="form-control-2" placeholder="Entry Phone Number">
+          </div>
+
+          <div class="box-footer">
+            <button type="submit" class="btn btn-primary">
+              Submit
+            </button>
+          </div>
+
+        </form>
+
+        <a th:href="@{/users/changePassword/{email} (email=${user.personalData.email})}" class="login">Change Password</a>
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

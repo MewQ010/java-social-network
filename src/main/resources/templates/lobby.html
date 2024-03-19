@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat App</title>
+</head>
+<body>
+<h2>Welcome to Chat App</h2>
+<form action="/chat" method="get">
+    <label for="sender">Your Name:</label>
+    <input type="text" id="sender" name="sender" required>
+    <label for="receiver">Friend's Name:</label>
+    <input type="text" id="receiver" name="receiver" required>
+    <button type="submit">Start Chat</button>
+</form>
+</body>
+</html>

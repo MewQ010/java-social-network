@@ -1,0 +1,114 @@
+html {
+  box-sizing: border-box;
+}
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
+body {
+  color: #fff;
+  background-color: #16171b;
+}
+
+.container {
+  padding-top: 78px;
+  width: 1440px;
+  margin: 0 auto;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.text-center {
+  font-size: 36px;
+  margin-bottom: 64px;
+}
+
+.form-control {
+  margin-bottom: 25px;
+  padding-bottom: 12px;
+  padding-top: 12px;
+  padding-left: 14px;
+  width: 636px;
+  background-color: #222326;
+  border-radius: 10px;
+  border: 1px solid #222326;
+  color: #ababad;
+}
+
+.btn {
+  margin-top: 10px;
+  font-size: 20px;
+  padding: 12px 112px;
+  border-radius: 10px;
+  background-color: #16171b;
+  border: 1px solid #fff;
+  color: #fff;
+  margin-bottom: 32px;
+}
+
+.login {
+  font-size: 22px;
+  text-decoration: none;
+  color: #ababad;
+  margin-bottom: 98px;
+}
+
+.email__box {
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  background-color: #222326;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #ababad;
+  width: 636px;
+  margin: 0 auto;
+  margin-bottom: 145px;
+}
+
+.email__text {
+  padding: 24px 35px;
+  text-align: center;
+}
+
+.profile-img {
+  margin-bottom: 20px;
+}
+
+.form-control-2 {
+  margin-bottom: 25px;
+  padding-bottom: 12px;
+  padding-top: 12px;
+  padding-left: 14px;
+  width: 560px;
+  background-color: #222326;
+  border-radius: 10px;
+  border: 1px solid #222326;
+  color: #ababad;
+}
+
+.form-control-3 {
+  margin-bottom: 25px;
+  padding-bottom: 12px;
+  padding-top: 12px;
+  padding-left: 14px;
+  width: 75px;
+  background-color: #222326;
+  border-radius: 10px;
+  border: 1px solid #222326;
+  color: #ababad;
+}
+
+textarea {
+  width: 97%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #222326;
+  color: #fff;
+  font-size: 16px;
+  resize: none;
+}

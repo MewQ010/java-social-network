@@ -1,34 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link th:href="@{/css/postView.css}" rel="stylesheet"/>
 </head>
 <body>
-<table class="table table-striped table-bordered">
-    <thead class="table-dark">
-    <tr>
-        <th>User login</th>
-        <th>User password(encoded)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <th:block th:each="post, index : ${posts}">
-        <li>
-            Post Title: <span th:text="${post.header}"></span><br>
-            Post Content: <span th:text="${post.description}"></span><br>
-            User Name: <span th:text="${userNames[__${index.index}__]}"></span>
-        </li>
-    </th:block>
-    </tbody>
+<header>
+    <div class="txt">
+        <h1 class="logo">Назва/лого</h1>
+        <a th:href="@{/home}" class="hdr">Головна</a>
+        <a href="" class="hdr">Розробники</a>
+        <a href="" class="hdr">Химич Володимир</a>
+        <a href="" class="hdr">укр</a>
+        <a th:href="@{/search}" class="hdr">Пошук</a>
 
-    <div class="login">
-        <a th:href="@{/users/addPost}" class="register">Add Post</a>
+        <div class="buttons">
+        <div class="but" id="but">
+            <a th:href="@{/users/userProfile}" th:text="${login.login}" class="author"></a>
+        </div>
+        <div class="but">
+            <a th:href="@{/posts/addPost}" class="author">Add Post</a>
+        </div>
+        </div>
     </div>
 
-</table>
+</header>
+<div class="container">
+    <p class="posts__title">All Posts</p>
+    <div th:each="post, index : ${posts}" class="post__box">
+        <div class="user_link">
+            <a th:href="@{/profile{login}(login=${userNames[__${index.index}__]})}" th:text="${userNames[__${index.index}__]}" class="username"></a>
+        </div>
+        <p th:text="${post.header}" class="post__header"></p>
+        <p th:text="${post.description}" class="post__descr"></p>
+        <div class="user_link-2">
+            <a th:href="@{/posts/comments/{id} (id=${post.id})}" class="login">Comment</a>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

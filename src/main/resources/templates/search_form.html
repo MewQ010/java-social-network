@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Search Form</title>
+    <link th:href="@{/css/registration.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+<h1 class="text-center">Введіть логін користувача</h1>
+<form action="/search" method="post">
+    <input type="text" id="name" name="name" class="form-control" placeholder="Enter User Name" required>
+    <button class="btn btn-primary" type="submit">Search</button>
+</form>
+</div>
+</body>
+</html>

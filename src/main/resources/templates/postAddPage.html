@@ -3,30 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
+    <link th:href="@{/css/postAdd.css}" rel="stylesheet"/>
 </head>
 <body>
-<table class="table table-striped table-bordered">
 
-    <form method="POST" name="newPost" th:object="${post}">
-
+<div class="container">
+    <h1>Add New Post</h1>
+    <form method="POST" name="newPost" th:object="${post}" >
         <div class="form-group">
-            <input type="text" name="header" th:field="*{header}" class="form-control" required placeholder="Add Header">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required th:field="*{header}" placeholder="Add Header"/>
         </div>
-
         <div class="form-group">
-            <input type="text" name="description" th:field="*{description}" required class="form-control" placeholder="Add Description">
+            <label for="content">Content:</label>
+            <textarea id="content" name="content" rows="4" required th:field="*{description}" placeholder="Add Description"></textarea>
         </div>
-
-        <div class="box-footer">
-            <button type="submit" class="btn btn-primary">
-                Submit
-            </button>
-        </div>
-
+        <button type="submit">Submit</button>
     </form>
-</table>
+</div>
+
 </body>
 </html>

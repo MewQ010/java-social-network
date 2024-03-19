@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <link th:href="@{/css/profile.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<header>
+    <div class="txt">
+        <h1 class="logo">Назва/лого</h1>
+        <a th:href="@{/home}" class="hdr">Головна</a>
+        <a href="" class="hdr">Розробники</a>
+        <a href="" class="hdr">Химич Володимир</a>
+        <a href="" class="hdr">укр</a>
+        <a th:href="@{/search}" class="hdr">Пошук</a>
+
+        <div class="but">
+            <a th:href="@{/posts/addPost}" class="author">Add Post</a>
+        </div>
+    </div>
+
+</header>
+
+<div class="header">
+    <div class="container">
+        <div class="user__info">
+            <div class="profile__img-box">
+                <img th:src="@{'data:image/jpeg;base64,' + ${base64Image}}" alt="Image" class="profile__img">
+            </div>
+            <p class="user__login" th:text="${user.login}"></p>
+        </div>
+        <div class="user__descr">
+            <p class="user__name" th:text="${user.personalData.firstName} + ' ' + ${user.personalData.lastName}"></p>
+            <p class="user__email" th:text="${user.personalData.email}"></p>
+            <p class="user__email" th:text="${user.personalData.description}"></p>
+            <a th:href="@{/users/editUser}" class="login">Edit User</a>
+            <a th:href="@{/posts/addPost}" class="login">Add Post</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <p class="user__login">User Posts</p>
+    <div class="user__posts" th:each="post : ${userPosts}">
+        <div class="post__box">
+            <div class="user_link">
+                <p class="user__name" th:text="${user.login}"></p>
+            </div>
+            <p class="post__text" th:text="${post.header}"></p>
+            <p class="post__descr" th:text="${post.description}"></p>
+            <div class="post__links">
+                <a th:href="@{'/posts/comments/' + ${post.id}}" class="login">Comment</a>
+                <form action="/posts/delete" method="post" class="chat-input">
+                    <input type="hidden" name="postId" th:value="${post.id}">
+                    <button class="login" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

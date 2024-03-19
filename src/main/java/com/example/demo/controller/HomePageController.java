@@ -1,29 +1,39 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Post;
-import com.example.demo.service.HomePageService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import com.example.demo.repository.*;
+import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequiredArgsConstructor
+@Controller
+@AllArgsConstructor
 @RequestMapping("/home")
 public class HomePageController {
 
-    private final HomePageService mainService;
+//    private final HomePageService mainService;
+    private final UserRepository userRepository;
 
-    @GetMapping("/posts")
-    public ResponseEntity<Page<Post>> getAllPosts(@RequestParam(defaultValue = "1") int page,
-                                                  @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Post> posts = mainService.getAllPosts(pageable);
-        return ResponseEntity.ok(posts);
+//    @GetMapping("/posts")
+//    public ResponseEntity<Page<Post>> getAllPosts(@RequestParam(defaultValue = "1") int page,
+//                                                  @RequestParam(defaultValue = "10") int size) {
+//        Pageable pageable = PageRequest.of(page - 1, size);
+//        Page<Post> posts = mainService.getAllPosts(pageable);
+//        return ResponseEntity.ok(posts);
+//    }
+
+    @GetMapping
+    public String mainPage(Model model, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if(userId == null) {
+            model.addAttribute("userId", false);
+        } else {
+            model.addAttribute("userId", true);
+            model.addAttribute("user", userRepository.findById(userId).get());
+        }
+        return "mainPage";
     }
+
 }

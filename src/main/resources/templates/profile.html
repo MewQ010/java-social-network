@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link th:href="@{/css/profile.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<header>
+    <div class="txt">
+        <h1 class="logo">Назва/лого</h1>
+        <a th:href="@{/home}" class="hdr">Головна</a>
+        <a href="" class="hdr">Розробники</a>
+        <a href="" class="hdr">Химич Володимир</a>
+        <a href="" class="hdr">укр</a>
+        <a th:href="@{/search}" class="hdr">Пошук</a>
+
+        <div class="buttons">
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${name}" class="author"></a>
+            </div>
+            <div class="but">
+                <a th:href="@{/posts/addPost}" class="author">Add Post</a>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<div class="header">
+    <div class="container">
+        <div class="user__info">
+            <div class="profile__img-box">
+                <img th:src="@{'data:image/jpeg;base64,' + ${base64Image}}" alt="Image" class="profile__img">
+            </div>
+            <p class="user__login" th:text="${user.login}"></p>
+        </div>
+        <div class="user__descr">
+            <p class="user__name" th:text="${user.personalData.firstName} + ' ' + ${user.personalData.lastName}"></p>
+            <p class="user__email" th:text="${user.personalData.email}"></p>
+            <a th:href="@{chat/{login}(login=${user.login})}" th:text="Chat" class="login"></a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <p class="user__login">User Posts</p>
+    <div class="user__posts" th:each="post : ${userPosts}">
+        <div class="post__box">
+            <p class="user__name" th:text="${user.login}"></p>
+            <p class="post__text" th:text="${post.header}"></p>
+            <p class="post__descr" th:text="${post.description}"></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
