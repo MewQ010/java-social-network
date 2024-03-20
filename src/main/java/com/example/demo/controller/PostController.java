@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Comment;
-import com.example.demo.entity.Message;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.User;
 import com.example.demo.repository.*;
