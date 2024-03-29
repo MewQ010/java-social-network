@@ -14,7 +14,6 @@ body {
 }
 
 .container {
-
   margin-top: 30px;
 }
 
@@ -142,7 +141,7 @@ padding-top: 15px;
 
 .buttons {
   display: flex;
-  gap: 5px;
+  gap: 20px;
 }
 
 .login {
@@ -162,4 +161,36 @@ padding-top: 15px;
     margin-left: 20px;
     margin-right: 20px;
     margin-bottom: 10px;
+}
+
+.text-center{
+  text-align: center;
+  font-size: 30px;
+}
+
+.form-control {
+  margin-bottom: 25px;
+  padding-bottom: 12px;
+  padding-top: 12px;
+  padding-left: 14px;
+  width: 636px;
+  background-color: #222326;
+  border-radius: 10px;
+  border: 1px solid #222326;
+  color: #ababad;
+}
+
+.btn {
+  margin-top: 10px;
+  font-size: 20px;
+  padding: 12px 112px;
+  border-radius: 10px;
+  background-color: #16171b;
+  border: 1px solid #fff;
+  color: #fff;
+  margin-bottom: 32px;
+}
+
+.search-form{
+  text-align: center;
 }

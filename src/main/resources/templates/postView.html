@@ -18,12 +18,12 @@
         <a th:href="@{/search}" class="hdr">Пошук</a>
 
         <div class="buttons">
-        <div class="but" id="but">
-            <a th:href="@{/users/userProfile}" th:text="${login.login}" class="author"></a>
-        </div>
-        <div class="but">
-            <a th:href="@{/posts/addPost}" class="author">Add Post</a>
-        </div>
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${login.login}" class="author"></a>
+            </div>
+            <div class="but">
+                <a th:href="@{/posts/addPost}" class="author">Add Post</a>
+            </div>
         </div>
     </div>
 
@@ -39,6 +39,19 @@
         <div class="user_link-2">
             <a th:href="@{/posts/comments/{id} (id=${post.id})}" class="login">Comment</a>
         </div>
+    </div>
+    <div>
+        <p>Page <span th:text="${currentPage}"></span> of <span th:text="${totalPages}"></span></p>
+        <p>
+            <a th:href="@{/posts(page=1)}">First</a>
+            <span th:if="${currentPage > 1}">
+                <a th:href="@{/posts(page=${currentPage - 1})}">Previous</a>
+            </span>
+            <span th:if="${currentPage < totalPages}">
+                <a th:href="@{/posts(page=${currentPage + 1})}">Next</a>
+            </span>
+            <a th:href="@{/posts(page=${totalPages})}">Last</a>
+        </p>
     </div>
 </div>
 

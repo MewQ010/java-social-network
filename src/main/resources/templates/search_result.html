@@ -8,6 +8,13 @@
 <body>
 <div class="container">
 <h2 class="posts__title">User Search Result</h2>
+    <form action="/search" class="search-form" method="post">
+        <input type="text" id="name" name="name" class="form-control" placeholder="Enter User Name" required>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    <div class="text-center" style="color: red" th:if="${error != null}">
+        [[${error}]]
+    </div>
     <div class="post__box box-1" th:each="user : ${users}">
         <div  class="profile__img-box box-1">
             <a th:href="@{profile{login}(login=${user.login})}" class="user_link">

@@ -33,17 +33,21 @@ public class SearchController {
 
     @PostMapping("/search")
     public String searchUser(@RequestParam String name, Model model) throws IOException {
-        List<User> users = userRepository.findByLogin(name);
-        model.addAttribute("users", users);
-        String imageKey = users.get(0).getPersonalData().getProfileImageUrl();
-
-        String base64Image;
         try {
-            base64Image = awsService.getImageFromAWS(imageKey);
-        } catch (IOException e) {
-            base64Image = "def-profile-img.jpg";
+            List<User> users = userRepository.findByLogin(name);
+            model.addAttribute("users", users);
+            String imageKey = users.get(0).getPersonalData().getProfileImageUrl();
+
+            String base64Image;
+            try {
+                base64Image = awsService.getImageFromAWS(imageKey);
+            } catch (IOException e) {
+                base64Image = "def-profile-img.jpg";
+            }
+            model.addAttribute("base64Image", base64Image);
+        } catch (IndexOutOfBoundsException e) {
+                model.addAttribute("error", "Sorry we can not find User with this Login " + name);
         }
-        model.addAttribute("base64Image", base64Image);
         return "search_result";
     }
 }

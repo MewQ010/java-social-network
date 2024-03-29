@@ -3,10 +3,12 @@ package com.example.demo.controller;
 import com.example.demo.entity.Message;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.User;
+import com.example.demo.repository.ChatRepository;
 import com.example.demo.repository.MessageRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AWSService;
+import com.example.demo.service.ChatService;
 import com.google.common.collect.Lists;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -18,25 +20,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @Controller
-public class MessageController {
+public class ChatController {
 
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
     private final PostRepository postRepository;
     private final AWSService awsService;
-
-
-    @GetMapping("/")
-    public String index() {
-        return "lobby";
-    }
+    private final ChatRepository chatRepository;
+    private final ChatService chatService;
 
     @GetMapping("/profile{userName}")
     public String showProfile(Model model, @PathVariable String userName, HttpSession session) throws IOException {
@@ -65,22 +60,18 @@ public class MessageController {
     public String chat(HttpSession session, @PathVariable String receiver, Model model) {
         Long userId = (Long) session.getAttribute("userId");
         String sender = userRepository.findById(userId).get().getLogin();
-        List<Message> messages = messageRepository.findBySenderAndReceiverOrSenderAndReceiverOrderByTimestampAsc(sender, receiver, receiver, sender);
-        model.addAttribute("messages", messages);
+        chatService.createChat(sender, receiver);
+        model.addAttribute("messages", messageRepository.findBySenderAndReceiverOrSenderAndReceiverOrderByTimestampAsc(sender, receiver, receiver, sender));
         model.addAttribute("sender", sender);
         model.addAttribute("receiver", receiver);
+        model.addAttribute("channel", chatRepository.findBySenderAndReceiverOrSenderAndReceiver(sender, receiver, receiver, sender).get(0).getChannel());
         return "chat";
     }
 
     @PostMapping("/send")
     public String send(HttpSession session, @RequestParam String receiver, @RequestParam String content) {
         Long userId = (Long) session.getAttribute("userId");
-        String sender = userRepository.findById(userId).get().getLogin();
-        Message message = new Message();
-        message.setSender(sender);
-        message.setReceiver(receiver);
-        message.setContent(content);
-        messageRepository.save(message);
+        chatService.sendMessage(userRepository.findById(userId).get().getLogin(), receiver, content);
         return "redirect:/chat/" + receiver;
     }
 
@@ -112,5 +103,12 @@ public class MessageController {
         }
         model.addAttribute("base64Images", profileImages);
         return "userChatPage";
+    }
+
+    @GetMapping("/videoCall/{receiver}/{channel}")
+    public String videoCall(Model model, @PathVariable String receiver, @PathVariable String channel, HttpSession session) {
+        model.addAttribute(userRepository.findById((Long) session.getAttribute("userId")).get());
+        model.addAttribute("channel", channel);
+        return "videoCall";
     }
 }

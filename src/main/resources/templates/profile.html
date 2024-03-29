@@ -48,9 +48,14 @@
     <p class="user__login">User Posts</p>
     <div class="user__posts" th:each="post : ${userPosts}">
         <div class="post__box">
-            <p class="user__name" th:text="${user.login}"></p>
+            <div class="user_link">
+                <p class="user__name" th:text="${user.login}"></p>
+            </div>
             <p class="post__text" th:text="${post.header}"></p>
             <p class="post__descr" th:text="${post.description}"></p>
+            <div class="post__links">
+                <a th:href="@{'/posts/comments/' + ${post.id}}" class="login">Comment</a>
+            </div>
         </div>
     </div>
 </div>

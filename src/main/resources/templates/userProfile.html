@@ -36,7 +36,6 @@
         </div>
         <div class="user__descr">
             <p class="user__name" th:text="${user.personalData.firstName} + ' ' + ${user.personalData.lastName}"></p>
-            <p class="user__email" th:text="${user.personalData.email}"></p>
             <p class="user__email" th:text="${user.personalData.description}"></p>
             <a th:href="@{/users/editUser}" class="login">Edit User</a>
             <a th:href="@{/posts/addPost}" class="login">Add Post</a>

@@ -1,9 +1,5 @@
 package com.example.demo.service;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.S3Object;
 import com.example.demo.entity.*;
 import com.example.demo.exception.UserAlreadyExistsException;
 import com.example.demo.mapper.UserMapper;
@@ -13,19 +9,10 @@ import com.example.demo.repository.*;
 import com.example.demo.request.RegistrationRequest;
 import com.example.demo.validator.PersonalDataValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 import static com.example.demo.constants.TextConstants.*;
@@ -44,13 +31,6 @@ public class UserService{
     private final TelephoneCodeRepository telephoneCodeRepository;
     private final PersonalDataValidator personalDataValidator;
     private final TelephoneRepository telephoneRepository;
-
-
-    @Autowired
-    S3Service s3Service;
-
-    @Autowired
-    AmazonS3 amazonS3;
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -112,21 +92,26 @@ public class UserService{
         return VALID_MESSAGE;
     }
 
-    public void registerUser(User user) throws UserAlreadyExistsException, LoginException {
+    public void registerUser(User user) throws UserAlreadyExistsException {
         personalDataValidator.isValid(user.getPersonalData());
         if(!userRepository.findByLogin(user.getLogin()).isEmpty()) {
             throw new UserAlreadyExistsException("Account already created on this UserName");
         }
         if(userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
-            throw new LoginException();
+            throw new UserAlreadyExistsException("Account already created on this email");
         } else {
-            var newUserData = PersonalData.builder().email(user.getPersonalData().getEmail()).profileImageUrl("def-profile-img.jpg").build();
-            userDataRepository.save(newUserData);
+            PersonalData personalData = user.getPersonalData();
+            TelephoneCode newTelephoneCode = telephoneCodeRepository.findByCode(personalData.getTelephone().getTelephoneCode().getCode());
+            Telephone telephone = Telephone.builder().telephoneNumber(personalData.getTelephone().getTelephoneNumber()).telephoneCode(newTelephoneCode).build();
+            telephoneRepository.save(telephone);
+            personalData.setTelephone(telephone);
+            personalData.setProfileImageUrl("def-profile-img.jpg");
+            userDataRepository.save(personalData);
             var newUser =
                     User.builder()
                             .login(user.getLogin())
                             .password(passwordEncoder.encode(user.getPassword()))
-                            .personalData(newUserData)
+                            .personalData(personalData)
                             .registrationDateTime(java.time.ZonedDateTime.now())
                             .build();
             userRepository.save(newUser);
@@ -153,7 +138,7 @@ public class UserService{
         postRepository.save(post);
     }
 
-    public void savePersonalData(PersonalData exitingPersonalData, PersonalData newPersonalData, String profileImage) throws LoginException {
+    public void savePersonalData(PersonalData exitingPersonalData, PersonalData newPersonalData, String profileImage) {
         TelephoneCode newTelephoneCode = telephoneCodeRepository.findByCode(newPersonalData.getTelephone().getTelephoneCode().getCode());
         Telephone telephone = Telephone.builder().telephoneNumber(newPersonalData.getTelephone().getTelephoneNumber()).telephoneCode(newTelephoneCode).build();
         telephoneRepository.save(telephone);
@@ -163,6 +148,21 @@ public class UserService{
         exitingPersonalData.setLastName(newPersonalData.getLastName());
         exitingPersonalData.setDateOfBirth(newPersonalData.getDateOfBirth());
         exitingPersonalData.setProfileImageUrl(profileImage);
+        exitingPersonalData.setTelephone(telephone);
+        exitingPersonalData.setDescription(newPersonalData.getDescription());
+
+        userDataRepository.save(exitingPersonalData);
+    }
+
+    public void savePersonalData(PersonalData exitingPersonalData, PersonalData newPersonalData) {
+        TelephoneCode newTelephoneCode = telephoneCodeRepository.findByCode(newPersonalData.getTelephone().getTelephoneCode().getCode());
+        Telephone telephone = Telephone.builder().telephoneNumber(newPersonalData.getTelephone().getTelephoneNumber()).telephoneCode(newTelephoneCode).build();
+        telephoneRepository.save(telephone);
+        personalDataValidator.isValid(newPersonalData);
+
+        exitingPersonalData.setFirstName(newPersonalData.getFirstName());
+        exitingPersonalData.setLastName(newPersonalData.getLastName());
+        exitingPersonalData.setDateOfBirth(newPersonalData.getDateOfBirth());
         exitingPersonalData.setTelephone(telephone);
         exitingPersonalData.setDescription(newPersonalData.getDescription());
 

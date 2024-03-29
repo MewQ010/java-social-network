@@ -27,11 +27,11 @@
           </div>
 
           <div class="form-group">
-            <textarea id="content" name="content" rows="4" required th:field="${personal_data.description}" placeholder="Add Description" class="form-control"></textarea>
+            <textarea id="content" name="content" rows="4" th:field="${personal_data.description}" placeholder="Add Description" class="form-control"></textarea>
           </div>
 
-          <div class="form-group">
-            <input type="date" name="dateOfBirth" th:field="${personal_data.dateOfBirth}" class="form-control">
+          <div class="form-group" id="dateOfBirth">
+            <input type="date" name="dateOfBirth" th:value="${dateOfBirth}" class="form-control">
           </div>
 
           <div class="form-group">

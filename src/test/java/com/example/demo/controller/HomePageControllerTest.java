@@ -21,14 +21,15 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
-public class HomePageController {
+public class HomePageControllerTest {
     @InjectMocks
-    private HomePageController mainController;
+    private HomePageControllerTest mainController;
 
     @Mock
     private HomePageService mainService;
@@ -50,7 +51,7 @@ public class HomePageController {
         Page<Post> page = new PageImpl<>(posts);
 
         given(mainService.getAllPosts(any(Pageable.class))).willReturn(page);
-//        when(mainService.getAllPosts(any(Pageable.class))).thenReturn(page);
+        when(mainService.getAllPosts(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/home/posts"))
                 .andExpect(status().isOk())

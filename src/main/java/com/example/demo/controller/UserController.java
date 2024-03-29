@@ -28,7 +28,6 @@ public class UserController {
     private final UserRepository userRepository;
     private final MailService mailService;
 
-
     @GetMapping
     public String getUsers(Model model) {
         model.addAttribute("users", userService.getUsers());
@@ -49,9 +48,11 @@ public class UserController {
         try{
             userService.registerUser(user);
             return "redirect:/users/login";
-        } catch (UserAlreadyExistsException | LoginException  | LocalDateException |
+        } catch (UserAlreadyExistsException | LocalDateException |
                  TelephoneException | SpecialSymbolsException | SwearWordsException e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("telephone_codes", telephoneCodeRepository.findAll());
+            model.addAttribute("telephone_code", new TelephoneCode());
             return "registration";
         }
     }
@@ -139,6 +140,7 @@ public class UserController {
         model.addAttribute("personal_data", userDataRepository.findById(userId));
         model.addAttribute("telephone_codes", telephoneCodeRepository.findAll());
         model.addAttribute("telephone_code", new TelephoneCode());
+        model.addAttribute("dateOfBirth", userDataRepository.findById(userId).get().getDateOfBirth());
         return "editUser";
     }
 
@@ -146,10 +148,15 @@ public class UserController {
     public String editUser(@ModelAttribute("personalData") PersonalData personalData, HttpSession session,
                            @RequestParam("file")MultipartFile multipartFile) throws LoginException, IOException {
         Long userId = (Long) session.getAttribute("userId");
-        String profileImage = awsService.saveImageToAWS(multipartFile);
-        personalData.setProfileImageUrl(profileImage);
-        PersonalData oldPersonalData = userRepository.findById(userId).get().getPersonalData();
-        userService.savePersonalData(oldPersonalData ,personalData, profileImage);
+        if(!multipartFile.isEmpty()) {
+            String profileImage = awsService.saveImageToAWS(multipartFile);
+            personalData.setProfileImageUrl(profileImage);
+            PersonalData oldPersonalData = userRepository.findById(userId).get().getPersonalData();
+            userService.savePersonalData(oldPersonalData ,personalData, profileImage);
+        } else {
+            PersonalData oldPersonalData = userRepository.findById(userId).get().getPersonalData();
+            userService.savePersonalData(oldPersonalData ,personalData);
+        }
         return "redirect:/users/userProfile";
     }
 
