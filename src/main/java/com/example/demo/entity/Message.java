@@ -1,14 +1,15 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @Entity
+@Table(name = "messages")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Message {
 
     @Id
@@ -16,6 +17,8 @@ public class Message {
     private Long id;
     @Column(name = "sender")
     private String sender;
+    @Column(name = "channel")
+    private String channel;
     @Column(name = "receiver")
     private String receiver;
     @Column(name = "content")

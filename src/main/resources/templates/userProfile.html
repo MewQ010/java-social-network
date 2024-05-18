@@ -6,27 +6,32 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link th:href="@{/css/profile.css}" rel="stylesheet"/>
 </head>
 <body>
 
-<header>
-    <div class="txt">
-        <h1 class="logo">Назва/лого</h1>
-        <a th:href="@{/home}" class="hdr">Головна</a>
-        <a href="" class="hdr">Розробники</a>
-        <a href="" class="hdr">Химич Володимир</a>
-        <a href="" class="hdr">укр</a>
-        <a th:href="@{/search}" class="hdr">Пошук</a>
-
-        <div class="but">
-            <a th:href="@{/posts/addPost}" class="author">Add Post</a>
-        </div>
-    </div>
-
-</header>
-
 <div class="header">
+
+    <header class="header-container">
+        <div class="txt">
+            <h1 class="logo">Назва/лого</h1>
+            <a th:href="@{/}" class="hdr">Головна</a>
+            <a href="" class="hdr">Розробники</a>
+            <a href="" class="hdr">Химич Володимир</a>
+            <a th:href="@{/posts}" class="hdr">Пости</a>
+            <a th:href="@{/search}" class="hdr">Пошук</a>
+            <a th:href="@{/chat}" class="hdr">Чати</a>
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
+                <a th:href="@{/posts/add}" class="author">Add Post</a>
+            </div>
+
+        </div>
+
+    </header>
+
     <div class="container">
         <div class="user__info">
             <div class="profile__img-box">
@@ -37,30 +42,47 @@
         <div class="user__descr">
             <p class="user__name" th:text="${user.personalData.firstName} + ' ' + ${user.personalData.lastName}"></p>
             <p class="user__email" th:text="${user.personalData.description}"></p>
-            <a th:href="@{/users/editUser}" class="login">Edit User</a>
-            <a th:href="@{/posts/addPost}" class="login">Add Post</a>
+            <a th:href="@{/users/editUser}" class="login2">Edit User</a>
+            <a th:if="${role == true}" th:href="@{/reports}" class="login2">Reports</a>
         </div>
     </div>
 </div>
 
-<div class="container">
+<div class="container post-container">
     <p class="user__login">User Posts</p>
-    <div class="user__posts" th:each="post : ${userPosts}">
+    <div class="user__posts" th:each="post, index : ${posts}">
         <div class="post__box">
             <div class="user_link">
-                <p class="user__name" th:text="${user.login}"></p>
+                <a th:href="@{/profile{login}(login=${user.login})}" th:text="${user.login}" class="username"></a>
             </div>
             <p class="post__text" th:text="${post.header}"></p>
             <p class="post__descr" th:text="${post.description}"></p>
             <div class="post__links">
-                <a th:href="@{'/posts/comments/' + ${post.id}}" class="login">Comment</a>
+                <a th:href="@{'/posts/comments/' + ${post.id}}" class="login fa-regular fa-comment"></a>
                 <form action="/posts/delete" method="post" class="chat-input">
                     <input type="hidden" name="postId" th:value="${post.id}">
-                    <button class="login" type="submit">Delete</button>
+                    <button class="login fa-solid fa-trash" type="submit"></button>
                 </form>
+                <button style="color: #ed0707;" th:class=" ${isLiked[__${index.index}__]} ? 'disL fa-solid fa-heart' : 'like fa-regular fa-heart'" th:id="'like-' + ${index.index}"></button>
+                <i th:id="'likes-' + ${index.index}" th:text="${likesList[__${index.index}__]}"></i>
             </div>
         </div>
     </div>
+
+    <div class="pagination-container">
+        <p class="page-num">Page <span th:text="${currentPage}"></span> of <span th:text="${totalPages}"></span></p>
+        <div class="pagination dark">
+            <a class="page dark" th:href="@{/users/userProfile(page=1)}">First</a>
+            <span th:if="${currentPage > 1}"><a class="page dark" th:href="@{/users/userProfile(page=${currentPage - 1})}">Previous</a></span>
+            <span th:if="${currentPage < totalPages}"><a class="page dark" th:href="@{/users/userProfile(page=${currentPage + 1})}">Next</a></span>
+            <a class="page dark" th:href="@{/users/userProfile(page=${totalPages})}">Last</a>
+        </div>
+    </div>
 </div>
+<script th:src="@{/js/post.js}"></script>
+<script th:inline="javascript">
+    var posts = /*[[${posts}]]*/ [];
+    var userId = /*[[${user.id}]]*/;
+</script>
 </body>
 </html>

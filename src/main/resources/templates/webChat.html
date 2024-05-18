@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+
+<div id="chat-page" class="hidden">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>WebSocket Chat</h2>
+        </div>
+        <div class="connecting">
+            Connecting...
+        </div>
+        <ul id="messageArea"></ul>
+        <form id="messageForm" name="messageForm">
+            <input type="text" id="message" placeholder="Type a message..." autocomplete="off" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script th:inline="javascript">
+    var recipient = /*[[${channel}]]*/ '';
+    var username = /*[[${user.login}]]*/ '';
+</script>
+<script>
+    'use strict';
+
+    var chatPage = document.querySelector('#chat-page');
+    var messageForm = document.querySelector('#messageForm');
+    var messageInput = document.querySelector('#message');
+    var messageArea = document.querySelector('#messageArea');
+    var connectingElement = document.querySelector('.connecting');
+
+    var stompClient = null;
+
+
+    var colors = [
+        '#2196F3', '#32c787', '#00BCD4', '#ff5652',
+        '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
+    ];
+
+    function connect() {
+
+        if (username && recipient) {
+            chatPage.classList.remove('hidden');
+
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, onConnected, onError);
+        }
+    }
+
+    function onConnected() {
+        stompClient.subscribe('/user/' + recipient + '/queue/messages', onMessageReceived);
+        connectingElement.classList.add('hidden');
+    }
+
+    function onError(error) {
+        connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh the page and try again!';
+        connectingElement.style.color = 'red';
+        console.error('WebSocket error:', error);
+    }
+
+    function sendMessage(event) {
+        var messageContent = messageInput.value.trim();
+        if (messageContent && stompClient) {
+            var chatMessage = {
+                sender: username,
+                recipient: recipient,
+                content: messageInput.value,
+                type: 'CHAT'
+            };
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+            messageInput.value = '';
+        }
+        event.preventDefault();
+    }
+
+    function onMessageReceived(payload) {
+        var message = JSON.parse(payload.body);
+        var messageElement = document.createElement('li');
+        var avatarElement = document.createElement('i');
+        var avatarText = document.createTextNode(message.sender[0]);
+        avatarElement.appendChild(avatarText);
+
+        messageElement.classList.add('chat-message');
+        messageElement.appendChild(avatarElement);
+
+        var usernameElement = document.createElement('span');
+        var usernameText = document.createTextNode(message.sender + ': ');
+        usernameElement.appendChild(usernameText);
+        messageElement.appendChild(usernameElement);
+
+        var messageText = document.createTextNode(message.content);
+        messageElement.appendChild(messageText);
+
+        messageArea.appendChild(messageElement);
+        messageArea.scrollTop = messageArea.scrollHeight;
+    }
+
+    // Connect automatically when the page loads
+    connect();
+
+
+    messageForm.addEventListener('submit', sendMessage, true);
+</script>
+</body>
+</html>

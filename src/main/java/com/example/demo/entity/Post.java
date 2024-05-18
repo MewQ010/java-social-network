@@ -7,6 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Data
 @Entity
@@ -27,4 +32,13 @@ public class Post {
     private Long userId;
     @Column(name = "description")
     private String description;
+    @Column(name = "time")
+    private String time;
+
+
+
+    @ElementCollection
+    @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "user_id")
+    private List<Long> likeList = new ArrayList<>();
 }

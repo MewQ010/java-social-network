@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
     List<Chat> findBySenderAndReceiverOrSenderAndReceiver(String sender, String receiver, String receiver2, String sender2);
+    List<Chat> findBySenderOrReceiver(String sender, String sender2);
 }

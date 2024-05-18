@@ -11,11 +11,13 @@
     <div class="chat-header">
         <h3 th:text="${post.header}"></h3>
     </div>
+    <div class="chat-messages">
     <div th:each="comment : ${comments}" class="chat-content" id="chat-box">
-        <div class="chat-message-left">
-            <div class="chat-message-bubble" th:text="${comment.sender}"></div>
-            <div class="chat-message-bubble" th:text="${comment.comment}"></div>
+        <div class="chat-message-left comment-box">
+            <a th:href="@{/profile{login}(login=${comment.sender})}" class="comment-sender video-call" th:text="${comment.sender}"></a>
+            <div class="comment" th:text="${comment.comment}"></div>
         </div>
+    </div>
     </div>
     <form action="/posts/send" method="post" class="chat-input">
         <input type="hidden" name="sender" th:value="${user.login}">

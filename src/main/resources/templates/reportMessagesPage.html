@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/css/reportMessage.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="header">
+
+    <header class="header-container">
+        <div class="txt">
+            <h1 class="logo">Назва/лого</h1>
+            <a th:href="@{/}" class="hdr">Головна</a>
+            <a href="" class="hdr">Розробники</a>
+            <a href="" class="hdr">Химич Володимир</a>
+            <a th:href="@{/posts}" class="hdr">Пости</a>
+            <a th:href="@{/search}" class="hdr">Пошук</a>
+            <a th:href="@{/chat}" class="hdr">Чати</a>
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${admin.login}" class="author"></a>
+                <a th:href="@{/posts/add}" class="author">Add Post</a>
+            </div>
+
+        </div>
+
+    </header>
+</div>
+
+<div class="container">
+
+<h1>All Reports</h1>
+    <div class="report-container">
+        <div class="report-box" th:each="report : ${reportMessages}">
+            <div class="report-info">
+                <p class="report-entity" th:text="${report.entity}"></p>
+                <p class="report-content" th:text="${report.content}"></p>
+                <a class="complete-report" th:href="@{'/reportMessage' + ${report.id} + '/' + ${report.entity} + '/' + ${report.entityId} + '/' + ${report.userId}}">Complete Report</a>
+                <form th:action="@{'/reportMessage' + ${report.id} + '/' + ${report.entity} + '/' + ${report.entityId}}" method="POST">
+                    <button type="submit" class="complete-report">Delete Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

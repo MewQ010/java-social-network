@@ -55,6 +55,8 @@
         </form>
 
         <a th:href="@{/users/changePassword/{email} (email=${user.personalData.email})}" class="login">Change Password</a>
+        <br>
+        <a th:href="@{/users/logout}" class="login">Log Out</a>
 
       </div>
     </div>

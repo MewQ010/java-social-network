@@ -34,3 +34,88 @@
     background: burlywood;
     justify-content: center;
 }
+
+.body-container {
+ background-color: #16171b;
+}
+
+html {
+ background-color: #16171b;
+}
+
+.video-box {
+ background-color: #333;
+}
+
+
+
+header{
+width: 100%;
+height: 72px;
+margin: 0px;
+background: #141418;
+}
+.txt{
+	width: 90%;
+	height: 72px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-direction: row;
+	margin-left: 64px;
+}
+.logo{
+color: var(--text-white, #FFF);
+font-size: 24px;
+font-family: JetBrains Mono;
+}
+.hdr{
+	font-size: 16px;
+font-family: JetBrains Mono;
+text-decoration: none;
+color: white;
+}
+.but{
+	width: 50%;
+	height: 72px;
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	justify-content: flex-end;
+   gap: 11px;
+}
+.author{
+	padding: 5px;
+	text-decoration: none;
+flex-shrink: 0;
+border-radius: 10px;
+
+background: black;
+color: white;
+font-size: 16px;
+font-family: JetBrains Mono;
+border: 2px solid white;
+}
+
+.buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.post__links {
+  text-decoration: none;
+  display: flex;
+}
+
+.username {
+ text-decoration: none;
+   font-weight: bold;
+   font-size: 18px;
+   color: #fff;
+}
+
+.header-container {
+          margin-top: 30px;
+          width: 1440px;
+          margin: 0 auto;
+        }

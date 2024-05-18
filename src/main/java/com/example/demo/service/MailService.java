@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.entity.PersonalData;
 import com.example.demo.repository.*;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,15 +17,21 @@ import java.util.Properties;
 @AllArgsConstructor
 public class MailService {
 
+//    @Value("${spring.mail.username}")
+//    private String email;
+//
+//    @Value("${spring.mail.password}")
+//    private String emailPassword;
+
     private final UserDataRepository userDataRepository;
 
     public JavaMailSender createMailSender() {
+
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
         mailSender.setUsername("java.intita@gmail.com");
         mailSender.setPassword("csug gyry cmzr yeeb");
-
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -38,9 +45,13 @@ public class MailService {
     }
 
     public void sendMessage(PersonalData personalData) throws LoginException {
+
         if(!userDataRepository.existsByEmail(personalData.getEmail())) {
+
             throw new LoginException("We can't find user with this email");
+
         } else {
+
             String link = "http://localhost:8080/users/changePassword/" + personalData.getEmail();
             MailSender mailSender = createMailSender();
             SimpleMailMessage message = new SimpleMailMessage();
@@ -48,6 +59,7 @@ public class MailService {
             message.setSubject("Confirm Email");
             message.setText("confirm your email with link " + link);
             mailSender.send(message);
+
         }
     }
 

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link th:href="@{/css/postAdd.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="header">
+
+    <header class="header-container">
+        <div class="txt">
+            <h1 class="logo">Назва/лого</h1>
+            <a th:href="@{/}" class="hdr">Головна</a>
+            <a href="" class="hdr">Розробники</a>
+            <a href="" class="hdr">Химич Володимир</a>
+            <a th:href="@{/posts}" class="hdr">Пости</a>
+            <a th:href="@{/search}" class="hdr">Пошук</a>
+            <a th:href="@{/chat}" class="hdr">Чати</a>
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${admin.login}" class="author"></a>
+                <a th:href="@{/posts/add}" class="author">Add Post</a>
+            </div>
+
+        </div>
+
+    </header>
+</div>
+
+<div class="container">
+
+    <div class="user_link">
+        <h1>!You can click only one button!</h1>
+
+        <p class="reported">Link to Reported User: <a class="login-link" th:href="@{'/profile' + ${user.login}}" th:text="${user.login}"></a></p>
+        <p class="reported" th:text="'What was reported: ' + ${entity}"></p>
+        <p th:if="${user != null}">Reported User Info: </p>
+
+        <div th:if="${user != null}" class="post-box">
+            <p class="post-header" th:text="${user.login}"></p>
+            <p class="post-header" th:text="${user.personalData.firstName} + ' ' + ${user.personalData.lastName}"></p>
+            <p class="post-description" th:text="${user.personalData.description}"></p>
+            <div class="button-2">
+            <a class="complete-report" th:href="@{'/clearDescription' + ${user.id}}">Clear Description</a>
+            <a class="complete-report" th:href="@{'/deleteUser' + ${user.id}}">Delete User</a>
+            </div>
+        </div>
+
+        <p th:if="${post != null}">Post: </p>
+
+        <div th:if="${post != null}" class="post-box">
+            <p class="post-header" th:text="${post.header}"></p>
+            <p class="post-description" th:text="${post.description}"></p>
+            <div class="button-2">
+            <a class="complete-report" th:href="@{'/deletePost' + ${post.id}}">Delete Post</a>
+            </div>
+        </div>
+
+        <p>Report Message:</p>
+        <p class="report-message" th:text="${reportMessage.content}"></p>
+
+        <form method="POST">
+            <button type="submit">Delete Report if it is incorrect</button>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

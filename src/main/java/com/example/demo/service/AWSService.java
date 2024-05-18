@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.util.Base64;
 @Service
 public class AWSService {
 
+//    @Value("${application.bucket.name}")
+//    private String bucketName;
 
     @Autowired
     S3Service s3Service;
@@ -26,14 +29,8 @@ public class AWSService {
         return amazonS3.doesObjectExist(bucketName, key);
     }
 
-    public String saveImageToAWS(MultipartFile multipartFile) throws LoginException, IOException {
-        String profileImage = multipartFile.getOriginalFilename();
-        Long counter = 1L;
-
-        while(doesObjectExist("intitajavaproject", profileImage)) {
-            profileImage = profileImage + counter;
-            counter++;
-        }
+    public String saveImageToAWS(MultipartFile multipartFile, String login) throws LoginException {
+        String profileImage = multipartFile.getOriginalFilename().replaceAll("\\.jpg", "") + login + "\\.jpg";
 
         try {
             s3Service.uploadToS3(multipartFile.getInputStream(), profileImage);

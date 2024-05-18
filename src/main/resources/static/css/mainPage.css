@@ -141,7 +141,7 @@ margin-left: 73px;
 }
 .about1{
 width: 861px;
-height: 512px;
+height: 350px;
 flex-shrink: 0;
 border-radius: 10px;
 background: var(--components-dark-grey, #222326);
@@ -149,68 +149,13 @@ background: var(--components-dark-grey, #222326);
 flex-direction: row;
 align-items: center;
 }
-.about2{
-	width: 636px;
-height: 640px;
-flex-shrink: 0;
-border-radius: 10px;
-background: var(--components-dark-grey, #222326);
-	display: flex;
-flex-direction: row;
-align-items: center;
-}
-.about3{
-	width: 636px;
-height: 640px;
-flex-shrink: 0;
-border-radius: 10px;
-background: var(--components-dark-grey, #222326);
-	display: flex;
-flex-direction: row;
-align-items: center;
-margin-left: 40px;
-}
-.about4{
-	width: 861px;
-height: 448px;
-flex-shrink: 0;
-background: var(--components-dark-grey, #222326);
-display: flex;
-flex-direction: row;
-align-items: center;
-  border-top-right-radius: 10px;
-/*   border-top-left-radius: 0px;*/
-   border-start-end-radius: 10px;
-}
-.about5{
-width: 411px;
-height: 704px;
-flex-shrink: 0;
-border-radius: 10px;
-background: var(--components-dark-grey, #222326);
-	display: flex;
-flex-direction: row;
-align-items: center;
-margin-right: 40px;
-}
-.about7{
-width: 411px;
-height: 704px;
-flex-shrink: 0;
-border-radius: 10px;
-background: var(--components-dark-grey, #222326);
-	display: flex;
-flex-direction: row;
-align-items: center;
-margin-right: 40px;
-}
+
 
 .social{
 	display: flex;
 align-items: flex-start;
 gap: 64px;
-margin-bottom: 56px;
-margin-top: 54px;
+margin-bottom: 10px;
 }
 .txt1{
 	display: flex;
@@ -260,8 +205,8 @@ font-family: JetBrains Mono;
 line-height: 32px;
 }
 .photo{
-	width: 411px;
-height: 512px;
+	width: 350px;
+height: 350px;
 flex-shrink: 0;
 border-radius: 10px;
 background: url(./img/img.svg), lightgray 50% / cover no-repeat;
@@ -284,23 +229,6 @@ border-radius: 10px;
 background: url(./img/img.svg), lightgray 50% / cover no-repeat;
 margin-right: 40px;
 }
-.poloska{
-	width: 100%;
-	    flex-direction: row;
-    justify-content: flex-end;
-    float: right;
-}
-.mesage{
-	width: 98.043px;
-height: 72px;
-flex-shrink: 0;
-border-radius: 10px 0px 0px 10px;
-background: var(--icons-text-dark-grey, #2D2E32);
-margin-top: 54px;
-display: flex;
-align-items: center;
-justify-content: center;
-float: right;
 }
 footer{
 	width: 100%;
@@ -362,4 +290,9 @@ hr{
 	background: #2D2E32;
 	height: 2px;
 	width: 100%;
+}
+
+.social-img {
+ text-decoration: none;
+ color: #fff;
 }

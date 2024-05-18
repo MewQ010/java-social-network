@@ -1,7 +1,8 @@
 package com.example.demo.validator;
 
 import com.example.demo.exception.SwearWordsException;
-import com.example.demo.util.JSONUtils;
+import com.example.demo.util.
+        JSONUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -27,19 +29,15 @@ public class UserController {
     private final TelephoneCodeRepository telephoneCodeRepository;
     private final UserRepository userRepository;
     private final MailService mailService;
-
-    @GetMapping
-    public String getUsers(Model model) {
-        model.addAttribute("users", userService.getUsers());
-        model.addAttribute("user", new User());
-        return "index";
-    }
+    private final ReportMessageRepository reportMessageRepository;
 
     @GetMapping("/register")
     public String createUser(Model model) {
+
         model.addAttribute("telephone_codes", telephoneCodeRepository.findAll());
         model.addAttribute("telephone_code", new TelephoneCode());
         model.addAttribute("users", new User());
+
         return "registration";
     }
 
@@ -48,11 +46,15 @@ public class UserController {
         try{
             userService.registerUser(user);
             return "redirect:/users/login";
+
         } catch (UserAlreadyExistsException | LocalDateException |
                  TelephoneException | SpecialSymbolsException | SwearWordsException e) {
+
             model.addAttribute("error", e.getMessage());
             model.addAttribute("telephone_codes", telephoneCodeRepository.findAll());
             model.addAttribute("telephone_code", new TelephoneCode());
+            model.addAttribute("user", user);
+
             return "registration";
         }
     }
@@ -66,22 +68,21 @@ public class UserController {
     @PostMapping("/login")
     public String loginUser(@ModelAttribute("users") User user, HttpSession session, Model model) {
         try {
-            try {
-                userService.loginUser(user);
-            } catch (NullPointerException e) {
-                model.addAttribute("error", e.getMessage());
-                return "login";
-            }
-            User oldUser = userRepository.findByPersonalData(userDataRepository.findByEmail(user.getPersonalData().getEmail()));
-            if (oldUser != null) {
-                session.setAttribute("userId", oldUser.getId());
-                return "redirect:/posts";
-            } else {
+            userService.loginUser(user);
+            User oldUser = userRepository.findByLogin(user.getLogin()).get(0);
+
+            if (oldUser == null) {
                 model.addAttribute("error", "User not found");
+                model.addAttribute("user", user);
                 return "login";
             }
-        } catch (LoginException e) {
+
+            session.setAttribute("userId", oldUser.getId());
+            return "redirect:/posts";
+
+        } catch (GeneralSecurityException e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("user", user);
             return "login";
         }
     }
@@ -98,8 +99,8 @@ public class UserController {
             mailService.sendMessage(personalData);
             return "confirmEmailWaiting";
         } catch (LoginException e) {
-                model.addAttribute("error", e.getMessage());
-                return "confirmEmail";
+            model.addAttribute("error", e.getMessage());
+            return "confirmEmail";
         }
     }
 
@@ -116,48 +117,89 @@ public class UserController {
     }
 
     @GetMapping("/userProfile")
-    public String userProfile(Model model, HttpSession session) {
+    public String userProfile(Model model, HttpSession session, Integer page) {
         Long userId = (Long) session.getAttribute("userId");
         User user = userRepository.findById(userId).get();
-        List<Post> userPosts = postRepository.findAllByUserId(userId);
-        model.addAttribute("userPosts", Lists.reverse(userPosts));
-        model.addAttribute("user", user);
         String imageKey = user.getPersonalData().getProfileImageUrl();
         String base64Image;
+
         try {
             base64Image = awsService.getImageFromAWS(imageKey);
         } catch (IOException e) {
             base64Image = "def-profile-img.jpg";
         }
+
+        List<Post> posts = Lists.reverse(postRepository.findAllByUserId(userId));
+        List<Integer> likesList = new ArrayList<>();
+        List<Boolean> isLiked = new ArrayList<>();
+
+        int pageSize = 5;
+        int totalPages = (int) Math.ceil((double) posts.size() / pageSize);
+
+        if (page == null || page < 1 || page > totalPages) {
+            page = 1;
+        }
+
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, posts.size());
+        List<Post> currentPagePosts = posts.subList(startIndex, endIndex);
+
+        for(Post post : currentPagePosts) {
+            likesList.add(post.getLikeList().size());
+            isLiked.add(post.getLikeList().contains(userId));
+        }
+
+        model.addAttribute("isLiked", isLiked);
+        model.addAttribute("likesList", likesList);
         model.addAttribute("base64Image", base64Image);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("posts", currentPagePosts);
+        model.addAttribute("user", user);
+        model.addAttribute("role", user.getRole().equals(UserRole.ADMIN) || user.getRole().equals(UserRole.OWNER));
+
         return "userProfile";
     }
 
     @GetMapping("/editUser")
     public String editUser(Model model, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        model.addAttribute("user", userRepository.findById(userId).get());
-        model.addAttribute("personal_data", userDataRepository.findById(userId));
+        User user = userRepository.findById(userId).get();
+
+        model.addAttribute("user", user);
+        model.addAttribute("personal_data", user.getPersonalData());
         model.addAttribute("telephone_codes", telephoneCodeRepository.findAll());
         model.addAttribute("telephone_code", new TelephoneCode());
-        model.addAttribute("dateOfBirth", userDataRepository.findById(userId).get().getDateOfBirth());
+        model.addAttribute("dateOfBirth", user.getPersonalData().getDateOfBirth());
+
         return "editUser";
     }
 
     @PostMapping("/editUser")
     public String editUser(@ModelAttribute("personalData") PersonalData personalData, HttpSession session,
-                           @RequestParam("file")MultipartFile multipartFile) throws LoginException, IOException {
+                           @RequestParam("file")MultipartFile multipartFile) throws LoginException {
+
         Long userId = (Long) session.getAttribute("userId");
+        User user = userRepository.findById(userId).get();
+
         if(!multipartFile.isEmpty()) {
-            String profileImage = awsService.saveImageToAWS(multipartFile);
+            String profileImage = awsService.saveImageToAWS(multipartFile, user.getLogin());
             personalData.setProfileImageUrl(profileImage);
             PersonalData oldPersonalData = userRepository.findById(userId).get().getPersonalData();
             userService.savePersonalData(oldPersonalData ,personalData, profileImage);
+
         } else {
             PersonalData oldPersonalData = userRepository.findById(userId).get().getPersonalData();
             userService.savePersonalData(oldPersonalData ,personalData);
         }
+
         return "redirect:/users/userProfile";
+    }
+
+    @GetMapping("/logout")
+    public String logOutUser(HttpSession session) {
+        session.invalidate();
+        return "redirect:/users/login";
     }
 
 }

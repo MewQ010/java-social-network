@@ -15,6 +15,8 @@ body {
 
 .container {
   margin-top: 30px;
+  width: 1440px;
+  margin: 0 auto;
 }
 
 .posts__title {
@@ -35,7 +37,7 @@ body {
 .username {
   text-decoration: none;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 22px;
   color: #fff;
 }
 
@@ -47,6 +49,7 @@ body {
   margin-right: 20px;
   margin-bottom: 5px;
   color: #ababad;
+  font-size: 20px;
 }
 
 .post__descr {
@@ -56,6 +59,7 @@ body {
   margin-right: 20px;
   margin-left: 20px;
   color: #ababad;
+  font-size: 18px;
 }
 
 .user_link {
@@ -82,7 +86,7 @@ background: #141418;
 	align-items: center;
 	justify-content: space-between;
 	flex-direction: row;
-	margin-left: 64px;
+	margin-left: 15px;
 }
 .logo{
 color: var(--text-white, #FFF);
@@ -91,6 +95,8 @@ font-family: JetBrains Mono;
 }
 .hdr{
 	font-size: 16px;
+	margin-top: 22px;
+	margin-left: 7px;
 font-family: JetBrains Mono;
 text-decoration: none;
 color: white;
@@ -103,6 +109,7 @@ color: white;
 	flex-direction: row;
 	justify-content: flex-end;
    gap: 11px;
+   margin-left: 40px;
 }
 .author{
 	padding: 5px;
@@ -144,7 +151,7 @@ padding-top: 15px;
   gap: 20px;
 }
 
-.login {
+.login2 {
   padding: 5px 8px;
   background-color: #222326;
   border: 1px solid #ababad;
@@ -152,6 +159,15 @@ padding-top: 15px;
   text-decoration: none;
   color: #ababad;
   margin-right: 10px;
+}
+
+.login {
+  padding: 5px 8px;
+  background-color: #222326;
+  text-decoration: none;
+  color: #ababad;
+  margin-right: 10px;
+  font-size: 25px
 }
 
 .user_link-2 {
@@ -193,4 +209,117 @@ padding-top: 15px;
 
 .search-form{
   text-align: center;
+}
+
+.page-num {
+ text-align: center;
+}
+
+
+
+
+.btn {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px; /*optional*/
+    color: #aaa;
+    font-size: .875em;
+}
+
+.pagination {
+    background: #f2f2f2;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.page {
+    display: inline-block;
+    padding: 5px 15px;
+    margin-right: 4px;
+    border-radius: 5px;
+    border: solid 1px #c0c0c0;
+    background: #e9e9e9;
+    box-shadow: inset 0px 1px 0px rgba(255,255,255, .8), 0px 1px 3px rgba(0,0,0, .1);
+    font-size: .875em;
+    font-weight: bold;
+    text-decoration: none;
+    color: #717171;
+    text-shadow: 0px 1px 0px rgba(255,255,255, 1);
+}
+
+.page:hover, .page.gradient:hover {
+    background: #fefefe;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FEFEFE), to(#f0f0f0));
+    background: -moz-linear-gradient(0% 0% 270deg,#FEFEFE, #f0f0f0);
+}
+
+.page.active {
+    border: none;
+    background: #616161;
+    box-shadow: inset 0px 0px 8px rgba(0,0,0, .5), 0px 1px 0px rgba(255,255,255, .8);
+    color: #f0f0f0;
+    text-shadow: 0px 0px 3px rgba(0,0,0, .5);
+}
+
+.page.gradient {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f8f8f8), to(#e9e9e9));
+    background: -moz-linear-gradient(0% 0% 270deg,#f8f8f8, #e9e9e9);
+}
+
+.pagination.dark {
+    background-color: inherit;
+    color: #feffff;
+    text-align: center;
+}
+
+.page.dark {
+    border: solid 1px #32373b;
+    background: #3e4347;
+    box-shadow: inset 0px 1px 1px rgba(255,255,255, .1), 0px 1px 3px rgba(0,0,0, .1);
+    color: #feffff;
+    text-shadow: 0px 1px 0px rgba(0,0,0, .5);
+}
+
+.page.dark:hover, .page.dark.gradient:hover {
+    background: #3d4f5d;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#547085), to(#3d4f5d));
+    background: -moz-linear-gradient(0% 0% 270deg,#547085, #3d4f5d);
+}
+
+.page.dark.active {
+    border: none;
+    background: #2f3237;
+    box-shadow: inset 0px 0px 8px rgba(0,0,0, .5), 0px 1px 0px rgba(255,255,255, .1);
+}
+
+.page.dark.gradient {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#565b5f), to(#3e4347));
+    background: -moz-linear-gradient(0% 0% 270deg,#565b5f, #3e4347);
+}
+
+
+
+.like {
+ background-color: inherit;
+ border: none;
+ font-size: 25px
+}
+
+.disL {
+ background-color: inherit;
+ border: none;
+ font-size: 25px
+}
+
+.info {
+ display: flex;
+}
+
+
+
+@media (max-width: 430px) {
+    .container { width: 430px; }
+    .post__box { width: 400px; }
+    .main { display: none; }
+    .hdr { margin-top: 32px; }
 }

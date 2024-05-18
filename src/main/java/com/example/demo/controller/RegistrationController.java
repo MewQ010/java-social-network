@@ -39,13 +39,17 @@ public class RegistrationController {
     @GetMapping("/email/verification")
     public String verifyEmail(@RequestParam("token") String token) {
         VerificationToken verificationToken = tokenRepository.findByToken(token);
+
         if (verificationToken.getUser().isVerified()) {
             return ALREADY_VERIFIED_EMAIL_MESSAGE;
         }
+
         String verificationResult = userService.validateToken(token);
+
         if (verificationResult.equalsIgnoreCase("valid")) {
             return EMAIL_VERIFIED_SUCCESS_MESSAGE;
         }
+
         return INVALID_VERIFICATION_TOKEN_LOG_MESSAGE;
     }
 }

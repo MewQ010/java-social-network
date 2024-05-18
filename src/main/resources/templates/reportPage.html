@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link th:href="@{/css/postAdd.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="container">
+    <h1 th:text="'Report ' + ${entity}"></h1>
+    <form method="POST" name="newPost" th:object="${reportMessage}" >
+        <div class="form-group">
+            <label for="content">Report:</label>
+            <textarea id="content" name="content" rows="4" required th:field="*{content}" placeholder="Write report message"></textarea>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>

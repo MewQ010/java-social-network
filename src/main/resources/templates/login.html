@@ -17,7 +17,7 @@
         <form method="POST" name="newUser" class="newUser" th:object="${User}">
 
             <div class="form-group">
-                <input type="email" name="email" th:field="${users.personalData.email}" class="form-control" placeholder="Entry Email">
+                <input type="text" name="email" th:field="${users.login}" class="form-control" placeholder="Entry Username">
             </div>
 
             <div class="form-group">

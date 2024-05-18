@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link th:href="@{/css/mainPage.css}" rel="stylesheet"/>
+	<script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
 	<title></title>
 </head>
 <body>
@@ -11,10 +12,10 @@
 <header>
 	<div class="txt">			
 				<h1 class="logo">Назва/лого</h1>
-			<a th:href="@{/home}" class="hdr">Головна</a>
+			<a th:href="@{/}" class="hdr">Головна</a>
 			<a href="" class="hdr">Розробники</a>
 			<a href="" class="hdr">Химич Володимир</a>
-			<a href="" class="hdr">укр</a>
+		<a th:href="@{/posts}" class="hdr">Пости</a>
 			<a th:href="@{/search}" class="hdr">Пошук</a>
 			<a th:href="@{/chat}" class="hdr">Чати</a>
 			<div class="but" id="but">
@@ -29,164 +30,30 @@
 <div class="main">
 <div class="h1main">
 	<h1 class="mainh1">Lorem ipsum dolor sit amet</h1>
-	<p class="pmain">consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud</p>
+	<p class="pmain">This is a social network that was created by Oleksandr Prosiannikov</p>
 </div>
 </div>
 	<div class="post">
 		<div class="about1">
 			<div class="info">
 			<div class="social">
-				<img src="/img/github.svg">
-				<img src="/img/telegram.svg">
-				<img src="/img/slack.svg">
+				<a href="#" class="social-img"><p class="fa-brands fa-github social-img fa-2xl"></p></a>
+				<a href="https://t.me/Ice_Storm003" class="social-img"><p class="fa-brands fa-telegram social-img fa-2xl"></p></a>
+				<a href="https://www.instagram.com/bboy_icestorm/" class="social-img"><p class="fa-brands fa-instagram social-img fa-2xl"></p></a>
 			</div>
 			<div class="txt1">
 				<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
 			</div>
 					<div class="user">
 			<div class="ava"></div>
-			<p class="name">Власко Григорій</p>
+						<a th:href="@{/profileMewQ}"><p class="name">Просянніков Олександр</p></a>
 		</div>
 		</div>
 
 		</div>
 		<div class="photo"></div>
 	</div>
-		<div class="post">
-		<div class="about2">
-			<div class="info">
-			<div class="social">
-				<img src="/img/github.svg">
-				<img src="/img/telegram.svg">
-				<img src="/img/slack.svg">
-			</div>
-			<div class="txt2">
-				<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
-			</div>
-					<div class="user">
-			<div class="ava"></div>
-			<p class="name">Механічева Олександра</p>
-		</div>
-		</div>
-			
-		</div>
-		<div class="about3">
-			<div class="info">
-			<div class="social">
-				<img src="/img/github.svg">
-				<img src="/img/telegram.svg">
-				<img src="/img/slack.svg">
-			</div>
-			<div class="txt2">
-				<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
-			</div>
-					<div class="user">
-			<div class="ava"></div>
-			<p class="name">Ратинський Володимир</p>
-		</div>
-		</div>
-			
-		</div>
-		</div>
-		<div class="post4">
-					<div class="photo1"></div>
-		<div class="about4">
-			<div class="info">
-			<div class="social">
-				<img src="/img/github.svg">
-				<img src="/img/telegram.svg">
-				<img src="/img/slack.svg">
-			</div>
-			<div class="txt1">
-				<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
-			</div>
-					<div class="user">
-			<div class="ava"></div>
-			<p class="name">Бобрук Тимофій</p>
-		</div>
-		</div>
 
-		</div>
-
-	</div>
-			<div class="post">
-		<div class="about7">
-			<div class="info">
-			<div class="social">
-				<img src="/img/github.svg">
-				<img src="/img/telegram.svg">
-				<img src="/img/slack.svg">
-			</div>
-			<div class="txt5">
-				<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
-			</div>
-					<div class="user">
-			<div class="ava"></div>
-			<p class="name">Просянніков Олександр</p>
-		</div>
-		</div>
-			
-		</div>
-		<div class="about5">
-			<div class="info">
-			<div class="social">
-				<img src="/img/github.svg">
-				<img src="/img/telegram.svg">
-				<img src="/img/slack.svg">
-			</div>
-			<div class="txt5">
-				<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
-			</div>
-					<div class="user">
-			<div class="ava"></div>
-			<p class="name">Гавриш Костянтин</p>
-		</div>
-		</div>
-			
-		</div>
-		<div class="about5">
-			<div class="info">
-			<div class="social">
-				<img src="/img/github.svg">
-				<img src="/img/telegram.svg">
-				<img src="/img/slack.svg">
-			</div>
-			<div class="txt5">
-				<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
-			</div>
-					<div class="user">
-			<div class="ava"></div>
-			<p class="name">Гавриш Костянтин</p>
-		</div>
-		</div>
-				</div>
-		</div>
-		<div class="post6">
-			<div class="photo3"></div>
-		<div class="about1">
-			<div class="info">
-			<div class="social">
-				<img src="/img/github.svg">
-				<img src="/img/telegram.svg">
-				<img src="/img/slack.svg">
-			</div>
-			<div class="txt1">
-				<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrudconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore </p>
-			</div>
-					<div class="user">
-			<div class="ava"></div>
-			<p class="name">Власко Григорій</p>
-		</div>
-		</div>
-
-		</div>
-		
-	</div>
-	<div class="poloska">
-			<div class="mesage">
-				<img src="/img/messanger.svg">
-			</div>
-	</div>
 	<!-- <div class="pols"></div> -->
 		<footer>
 			<hr class="if">

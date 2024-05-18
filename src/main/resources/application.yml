@@ -22,17 +22,22 @@ spring:
 cloud:
   aws:
     credentials:
-      accessKey: AKIAU6GDWNCHBIIRV4XK
-      secretKey: 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
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
     region:
       static: eu-north-1
     stack:
       auto: false
 application:
   bucket:
-    name: intitajavaproject
+    name: ${BUCKET_NAME}
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+    key-alias: mycertificate
 spring-doc:
   api-docs:
     path: /api-docs

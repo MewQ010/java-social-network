@@ -2,31 +2,146 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Chat between <span th:text="${sender}"></span> and <span th:text="${receiver}"></span></title>
+    <title>Chat</title>
     <link th:href="@{/css/chat.css}" rel="stylesheet"/>
 </head>
 <html>
 <body>
+
+<header class="header-container">
+    <div class="txt">
+        <h1 class="logo">Назва/лого</h1>
+        <a th:href="@{/}" class="hdr">Головна</a>
+        <a href="" class="hdr">Розробники</a>
+        <a href="" class="hdr">Химич Володимир</a>
+        <a th:href="@{/posts}" class="hdr">Пости</a>
+        <a th:href="@{/search}" class="hdr">Пошук</a>
+        <a th:href="@{/chat}" class="hdr">Чати</a>
+        <div class="but" id="but">
+            <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
+            <a th:href="@{/posts/add}" class="author">Add Post</a>
+        </div>
+
+    </div>
+
+</header>
+
+<div class="container">
+
 <div class="chat-container">
     <div class="chat-header">
-        <h3 th:text="${receiver}"></h3>
+        <a class="video-call" th:href="@{/profile{login}(login=${receiver})}"><h3 th:text="${receiver}"></h3></a>
         <div class="post__links">
-            <a th:href="@{'/videoCall/' + ${sender} + '/' + ${channel}}" class="login">VideoCall</a>
+            <a th:href="@{'/videoCall/' + ${receiver} + '/' + ${channel}}" class="login video-call">Call</a>
         </div>
     </div>
+    <div class="chat-messages" id="chat-page">
+    <div id="messageArea">
     <div th:each="message : ${messages}" class="chat-content" id="chat-box">
-        <div th:class="${message.receiver} == ${receiver} ? 'chat-message-right' : 'chat-message-left'">
-            <div class="chat-message-status"></div>
+        <div th:class="${message.sender} == ${user.login} ? 'chat-message-right' : 'chat-message-left'">
             <div class="chat-message-bubble" th:text="${message.content}"></div>
         </div>
     </div>
-    <form action="/send" method="post" class="chat-input">
+    </div>
+    </div>
+    <form id="messageForm" name="messageForm" class="chat-input">
         <input type="hidden" name="sender" th:value="${sender}">
         <input type="hidden" name="receiver" th:value="${receiver}">
-        <input type="text" name="content" placeholder="Type your message..." required>
+        <input type="text" id="message" name="content" autocomplete="off" placeholder="Type your message..." required>
         <button class="send__btn" type="submit">Send</button>
     </form>
 </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script th:inline="javascript">
+    var recipient = /*[[${channel}]]*/ '';
+    var username = /*[[${user.login}]]*/ '';
+</script>
+<script>
+    'use strict';
+
+    var chatPage = document.querySelector('#chat-page');
+    var messageForm = document.querySelector('#messageForm');
+    var messageInput = document.querySelector('#message');
+    var messageArea = document.querySelector('#messageArea');
+
+    var stompClient = null;
+
+
+    var colors = [
+        '#2196F3', '#32c787', '#00BCD4', '#ff5652',
+        '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
+    ];
+
+    function connect() {
+
+        if (username && recipient) {
+            chatPage.classList.remove('hidden');
+
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, onConnected, onError);
+        }
+    }
+
+    function onConnected() {
+        stompClient.subscribe('/user/' + recipient + '/queue/messages', onMessageReceived);
+    }
+
+    function onError(error) {
+        console.error('WebSocket error:', error);
+    }
+
+    function sendMessage(event) {
+        var messageContent = messageInput.value.trim();
+        if (messageContent && stompClient) {
+            var chatMessage = {
+                sender: username,
+                recipient: recipient,
+                content: messageInput.value,
+                type: 'CHAT'
+            };
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+            messageInput.value = '';
+        }
+        event.preventDefault();
+    }
+
+    function onMessageReceived(payload) {
+        var message = JSON.parse(payload.body);
+        var messageElement = document.createElement('div');
+
+        var chatBox = document.createElement('div');
+        if(username == message.sender) {
+            chatBox.classList.add('chat-message-right');
+        } else {
+            chatBox.classList.add('chat-message-left');
+        }
+
+        var chatMessage = document.createElement('div');
+        chatMessage.classList.add('chat-message-bubble');
+        var messageText = document.createTextNode(message.content);
+        chatMessage.appendChild(messageText);
+
+        chatBox.appendChild(chatMessage);
+
+        messageElement.classList.add('chat-content');
+        messageElement.appendChild(chatBox);
+
+
+        messageArea.appendChild(messageElement);
+        messageArea.scrollTop = messageArea.scrollHeight;
+    }
+
+    // Connect automatically when the page loads
+    connect();
+
+
+    messageForm.addEventListener('submit', sendMessage, true);
+</script>
 </body>
 </html>
 

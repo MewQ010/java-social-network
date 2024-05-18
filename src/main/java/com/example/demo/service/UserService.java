@@ -7,7 +7,7 @@ import com.example.demo.entity.dto.PersonalDataDTO;
 import com.example.demo.entity.dto.UserDTO;
 import com.example.demo.repository.*;
 import com.example.demo.request.RegistrationRequest;
-import com.example.demo.validator.PersonalDataValidator;
+import com.example.demo.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class UserService{
     private final RoleRepository roleRepository;
     private final PostRepository postRepository;
     private final TelephoneCodeRepository telephoneCodeRepository;
-    private final PersonalDataValidator personalDataValidator;
+    private final UserValidator userValidator;
     private final TelephoneRepository telephoneRepository;
 
     public List<User> getUsers() {
@@ -92,14 +92,14 @@ public class UserService{
         return VALID_MESSAGE;
     }
 
-    public void registerUser(User user) throws UserAlreadyExistsException {
-        personalDataValidator.isValid(user.getPersonalData());
+    public User registerUser(User user) throws UserAlreadyExistsException {
+        userValidator.isValid(user);
         if(!userRepository.findByLogin(user.getLogin()).isEmpty()) {
             throw new UserAlreadyExistsException("Account already created on this UserName");
         }
         if(userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
             throw new UserAlreadyExistsException("Account already created on this email");
-        } else {
+        }
             PersonalData personalData = user.getPersonalData();
             TelephoneCode newTelephoneCode = telephoneCodeRepository.findByCode(personalData.getTelephone().getTelephoneCode().getCode());
             Telephone telephone = Telephone.builder().telephoneNumber(personalData.getTelephone().getTelephoneNumber()).telephoneCode(newTelephoneCode).build();
@@ -113,15 +113,16 @@ public class UserService{
                             .password(passwordEncoder.encode(user.getPassword()))
                             .personalData(personalData)
                             .registrationDateTime(java.time.ZonedDateTime.now())
+                            .role(UserRole.USER)
                             .build();
             userRepository.save(newUser);
-        }
+        return newUser;
     }
     public void loginUser(User user) throws LoginException {
-        if(!userDataRepository.existsByEmail(user.getPersonalData().getEmail())) {
-            throw new LoginException("We can't find user with this email");
+        if(!userRepository.existsByLogin(user.getLogin())) {
+            throw new LoginException("We can't find user with this User Name");
         }
-        User oldUser = userRepository.findByPersonalData(userDataRepository.findByEmail(user.getPersonalData().getEmail()));
+        User oldUser = userRepository.findByLogin(user.getLogin()).get(0);
         if(!passwordEncoder.matches(user.getPassword(), oldUser.getPassword())) {
             throw new LoginException("Wrong Password");
         }
@@ -142,7 +143,7 @@ public class UserService{
         TelephoneCode newTelephoneCode = telephoneCodeRepository.findByCode(newPersonalData.getTelephone().getTelephoneCode().getCode());
         Telephone telephone = Telephone.builder().telephoneNumber(newPersonalData.getTelephone().getTelephoneNumber()).telephoneCode(newTelephoneCode).build();
         telephoneRepository.save(telephone);
-        personalDataValidator.isValid(newPersonalData);
+        userValidator.isValid(newPersonalData);
 
         exitingPersonalData.setFirstName(newPersonalData.getFirstName());
         exitingPersonalData.setLastName(newPersonalData.getLastName());
@@ -158,7 +159,7 @@ public class UserService{
         TelephoneCode newTelephoneCode = telephoneCodeRepository.findByCode(newPersonalData.getTelephone().getTelephoneCode().getCode());
         Telephone telephone = Telephone.builder().telephoneNumber(newPersonalData.getTelephone().getTelephoneNumber()).telephoneCode(newTelephoneCode).build();
         telephoneRepository.save(telephone);
-        personalDataValidator.isValid(newPersonalData);
+        userValidator.isValid(newPersonalData);
 
         exitingPersonalData.setFirstName(newPersonalData.getFirstName());
         exitingPersonalData.setLastName(newPersonalData.getLastName());
@@ -168,4 +169,5 @@ public class UserService{
 
         userDataRepository.save(exitingPersonalData);
     }
+
 }

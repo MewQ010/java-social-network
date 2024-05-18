@@ -2,33 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <link th:href="@{/css/postView.css}" rel="stylesheet"/>
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-<header>
-    <div class="txt">
-        <h1 class="logo">Назва/лого</h1>
-        <a th:href="@{/home}" class="hdr">Головна</a>
-        <a href="" class="hdr">Розробники</a>
-        <a href="" class="hdr">Химич Володимир</a>
-        <a href="" class="hdr">укр</a>
-        <a th:href="@{/search}" class="hdr">Пошук</a>
-
-        <div class="buttons">
-            <div class="but" id="but">
-                <a th:href="@{/users/userProfile}" th:text="${login.login}" class="author"></a>
-            </div>
-            <div class="but">
-                <a th:href="@{/posts/addPost}" class="author">Add Post</a>
-            </div>
-        </div>
-    </div>
-
-</header>
 <div class="container">
+    <header>
+        <div class="txt">
+        <div class="info">
+            <h1 class="logo">Назва/лого</h1>
+            <a th:href="@{/}" class="hdr">Головна</a>
+<!--            <a href="" class="hdr main">Розробники</a>-->
+            <a href="" class="hdr main">Химич Володимир</a>
+            <a th:href="@{/posts}" class="hdr">Пости</a>
+            <a th:href="@{/search}" class="hdr fa-solid fa-magnifying-glass"></a>
+            <a th:href="@{/chat}" class="hdr">Чати</a>
+        </div>
+        <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${login.login}" class="author"></a>
+                <a th:href="@{/posts/add}" class="author">Add Post</a>
+            </div>
+
+        </div>
+
+    </header>
     <p class="posts__title">All Posts</p>
     <div th:each="post, index : ${posts}" class="post__box">
         <div class="user_link">
@@ -36,24 +37,28 @@
         </div>
         <p th:text="${post.header}" class="post__header"></p>
         <p th:text="${post.description}" class="post__descr"></p>
+        <p th:text="${post.time}" class="post__descr"></p>
         <div class="user_link-2">
-            <a th:href="@{/posts/comments/{id} (id=${post.id})}" class="login">Comment</a>
+            <a th:href="@{/posts/comments/{id} (id=${post.id})}" class="login fa-regular fa-comment"></a>
+            <a th:href="@{'/report/post/' + ${post.id} + '/' + ${post.userId}}" class="login fa-regular fa-flag"></a>
+            <button style="color: #ed0707;" th:class=" ${isLiked[__${index.index}__]} ? 'disL fa-solid fa-heart' : 'like fa-regular fa-heart'" th:id="'like-' + ${index.index}"></button>
+            <i th:id="'likes-' + ${index.index}" th:text="${likesList[__${index.index}__]}"></i>
         </div>
     </div>
-    <div>
-        <p>Page <span th:text="${currentPage}"></span> of <span th:text="${totalPages}"></span></p>
-        <p>
-            <a th:href="@{/posts(page=1)}">First</a>
-            <span th:if="${currentPage > 1}">
-                <a th:href="@{/posts(page=${currentPage - 1})}">Previous</a>
-            </span>
-            <span th:if="${currentPage < totalPages}">
-                <a th:href="@{/posts(page=${currentPage + 1})}">Next</a>
-            </span>
-            <a th:href="@{/posts(page=${totalPages})}">Last</a>
-        </p>
+    <div class="pagination-container">
+        <p class="page-num">Page <span th:text="${currentPage}"></span> of <span th:text="${totalPages}"></span></p>
+        <div class="pagination dark">
+            <a class="page dark" th:href="@{/posts(page=1)}">First</a>
+            <span th:if="${currentPage > 1}"><a class="page dark" th:href="@{/posts(page=${currentPage - 1})}">Previous</a></span>
+            <span th:if="${currentPage < totalPages}"><a class="page dark" th:href="@{/posts(page=${currentPage + 1})}">Next</a></span>
+            <a class="page dark" th:href="@{/posts(page=${totalPages})}">Last</a>
+        </div>
     </div>
 </div>
-
+<script th:src="@{/js/post.js}"></script>
+<script th:inline="javascript">
+    var posts = /*[[${posts}]]*/ [];
+    var userId = /*[[${login.id}]]*/;
+</script>
 </body>
 </html>

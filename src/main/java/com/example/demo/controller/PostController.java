@@ -3,20 +3,21 @@ package com.example.demo.controller;
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.User;
+import com.example.demo.exception.LoginException;
 import com.example.demo.repository.*;
 import com.example.demo.service.HomePageService;
 import com.example.demo.service.UserService;
 import com.google.common.collect.Lists;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,11 +37,14 @@ public class PostController {
         session.setAttribute("userId", id);
         List<Post> allPosts = homePageService.getAllPosts();
         List<String> userNames = new ArrayList<>();
+        List<Integer> likesList = new ArrayList<>();
+        List<Boolean> isLiked = new ArrayList<>();
 
         for (Post post : allPosts) {
             Optional<User> user = userRepository.findById(post.getUserId());
             userNames.add(user.get().getLogin());
         }
+
         userNames = Lists.reverse(userNames);
         List<Post> posts = Lists.reverse(postRepository.findAll());
 
@@ -56,6 +60,13 @@ public class PostController {
         List<Post> currentPagePosts = posts.subList(startIndex, endIndex);
         userNames = userNames.subList(startIndex, endIndex);
 
+        for(Post post : currentPagePosts) {
+            likesList.add(post.getLikeList().size());
+            isLiked.add(post.getLikeList().contains(id));
+        }
+
+        model.addAttribute("isLiked", isLiked);
+        model.addAttribute("likesList", likesList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("posts", currentPagePosts);
@@ -66,7 +77,7 @@ public class PostController {
         return "postView";
     }
 
-    @GetMapping("/addPost")
+    @GetMapping("/add")
     public String addPost(Model model, HttpSession session) {
 
         Long userId = (Long) session.getAttribute("userId");
@@ -77,11 +88,12 @@ public class PostController {
         return "postAddPage";
     }
 
-    @PostMapping("/addPost")
+    @PostMapping("/add")
     public String addPost(@ModelAttribute("post") Post post, HttpSession session) {
-
         Long userId = (Long) session.getAttribute("userId");
         post.setUserId(userId);
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().getTime());
+        post.setTime(time);
         userService.addPost(post);
 
         return "redirect:/posts";
@@ -133,10 +145,33 @@ public class PostController {
 
     @PostMapping("/edit")
     public String editPost(@ModelAttribute Post post, @RequestParam Long postId) {
-
         postRepository.save(post);
 
         return "redirect:/users/userProfile";
+    }
+
+    @PostMapping("/like")
+    public ResponseEntity<?> likePost(@RequestBody Post post, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId != null) {
+            Post savedPost = postRepository.save(post);
+            return ResponseEntity.ok(savedPost);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+    }
+
+    @PostMapping("/unlike/{postId}")
+    @ResponseBody
+    public void unlikePost(@PathVariable Long postId, HttpSession session) {
+        Post post = postRepository.findById(postId).orElse(null);
+        if (post != null) {
+            Long userId = (Long) session.getAttribute("userId");
+            post.getLikeList().remove(userId);
+            postRepository.save(post);
+        } else {
+            throw new LoginException("Wrong, You are invalid");
+        }
     }
 
 }

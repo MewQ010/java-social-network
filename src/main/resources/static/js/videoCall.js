@@ -64,7 +64,7 @@ const startVideo = async() => {
 const startAudio = async() => {
     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
     rtc.client.publish(rtc.localAudioTrack);
-    rtc.localAudioTrack.play();
+//    rtc.localAudioTrack.play();
 }
 
 const stopVideo = () => {
@@ -92,7 +92,7 @@ btnCam.click(function() {
     } else {
         $(this).addClass('fa-video-camera');
         $(this).removeClass('fa-video-slash');
-        $(this).css('color', 'black');
+        $(this).css('color', 'white');
         startVideo();
 
     }
@@ -108,7 +108,7 @@ btnMic.click(function() {
     } else {
         $(this).addClass('fa-microphone');
         $(this).removeClass('fa-microphone-slash');
-        $(this).css('color', 'black');
+        $(this).css('color', 'white');
         startAudio();
 
 
@@ -118,18 +118,9 @@ btnMic.click(function() {
 //Toggle Join and Leave
 
 btnPlug.click(function() {
-    if ($(this).hasClass('fas fa-plug')) {
-        $(this).addClass('fa-window-close');
-        $(this).removeClass('fas fa-plug');
-        $(this).css('color', 'red');
-        startOneToOneVideoCall();
-    } else {
-        $(this).addClass('fas fa-plug');
-        $(this).removeClass('fa-window-close');
-        $(this).css('color', 'black');
-
         rtc.client.leave();
         stopVideo();
         stopAudio();
-    }
+        var link = "https://localhost:8443/chat/" + receiver;
+        window.location.replace(link);
 });
