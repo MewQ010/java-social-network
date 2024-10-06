@@ -301,3 +301,144 @@ border: 2px solid white;
 margin-top: 30px;
   margin: 0 auto;
 }
+
+.container2 {
+  margin-top: 30px;
+  width: 1440px;
+  margin: 0 auto;
+}
+
+.information{
+    display: flex;
+    gap: 30px;
+}
+
+.header-head {
+ display: flex;
+ gap: 10px;
+}
+
+@media (max-width: 768px) {
+   .txt {
+        gap: 10px;
+   }
+
+  .container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .report-box, .header-container, .pagination-container {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .report-entity {
+    font-size: 1.25rem;
+  }
+
+  .report-content {
+    font-size: 1rem;
+    padding-right: 10px;
+  }
+
+  .report-entity, .complete-report {
+    font-size: 1rem;
+  }
+
+  .header-container, .txt {
+    width: 100%;
+    margin: 0;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+  }
+
+  .hdr, .author, .username {
+    font-size: 0.875rem;
+  }
+
+  .but {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 430px) {
+  body, html {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .header-info {
+          display: none;
+      }
+
+  .container2 {
+          width: 100%;
+          padding: 0 10px;
+          box-sizing: border-box;
+      }
+
+  .container {
+    width: 90%;
+    max-width: 380px;
+    margin: 0 auto; /* Центрирует блок по горизонтали */
+    padding: 15px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .report-box, .header-container, .pagination-container {
+    width: 100%;
+    margin: 0 auto; /* Центрирует блоки по горизонтали */
+    padding: 0 10px;
+  }
+
+  .report-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрирует элементы внутри по горизонтали */
+  }
+
+  .information {
+          display: flex;
+          justify-content: center;
+      }
+
+  .complete-report {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .page {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+
+ .container3 {
+    display: flex;
+ }
+
+ .header-container {
+    padding: 0;
+ }
+
+  .btn {
+    padding: 8px;
+    font-size: 0.75rem;
+  }
+
+  .hdr {
+           font-size: 25px;
+       }
+}

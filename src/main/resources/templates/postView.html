@@ -1,37 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link th:href="@{/css/postView.css}" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function searchPost() {
+            const query = document.getElementById("searchInput").value;
+            fetch(`/posts/search-post-fragment?q=${query}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("results").innerHTML = html;
+                });
+        }
+    </script>
+
 </head>
 <body>
-<div class="container">
+<div class="container container-4">
     <header>
         <div class="txt">
-        <div class="info">
-            <h1 class="logo">Назва/лого</h1>
-            <a th:href="@{/}" class="hdr">Головна</a>
-<!--            <a href="" class="hdr main">Розробники</a>-->
-            <a href="" class="hdr main">Химич Володимир</a>
-            <a th:href="@{/posts}" class="hdr">Пости</a>
-            <a th:href="@{/search}" class="hdr fa-solid fa-magnifying-glass"></a>
-            <a th:href="@{/chat}" class="hdr">Чати</a>
-        </div>
-        <div class="but" id="but">
-                <a th:href="@{/users/userProfile}" th:text="${login.login}" class="author"></a>
-                <a th:href="@{/posts/add}" class="author">Add Post</a>
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
             </div>
-
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${login.login}" class="author"></a>
+                <a class="author" id="addPostBtn">Add Post</a>
+            </div>
         </div>
-
     </header>
-    <p class="posts__title">All Posts</p>
+    <div class="container" id="container">
+        <form action="/posts/search{query}(query=${query}})" method="post">
+            <input type="text" id="searchInput" th:value="${query}" name="query" placeholder="Search post..." class="form-control" oninput="searchPost()"/>
+        </form>
+    </div>
+    <div class="container" id="results">
     <div th:each="post, index : ${posts}" class="post__box">
+        <div class="post-container">
         <div class="user_link">
             <a th:href="@{/profile{login}(login=${userNames[__${index.index}__]})}" th:text="${userNames[__${index.index}__]}" class="username"></a>
         </div>
@@ -39,26 +64,101 @@
         <p th:text="${post.description}" class="post__descr"></p>
         <p th:text="${post.time}" class="post__descr"></p>
         <div class="user_link-2">
-            <a th:href="@{/posts/comments/{id} (id=${post.id})}" class="login fa-regular fa-comment"></a>
-            <a th:href="@{'/report/post/' + ${post.id} + '/' + ${post.userId}}" class="login fa-regular fa-flag"></a>
             <button style="color: #ed0707;" th:class=" ${isLiked[__${index.index}__]} ? 'disL fa-solid fa-heart' : 'like fa-regular fa-heart'" th:id="'like-' + ${index.index}"></button>
             <i th:id="'likes-' + ${index.index}" th:text="${likesList[__${index.index}__]}"></i>
+            <a th:href="@{/posts/comments/{id} (id=${post.id})}" class="login fa-regular fa-comment"></a>
+            <a th:href="@{'/report/post/' + ${post.id} + '/' + ${post.userId}}" class="login fa-regular fa-flag"></a>
+        </div>
+        </div>
+        <div th:if='${currentPostImages[index.index] != ""}'>
+            <img th:src="@{'data:image/jpeg;base64,' + ${currentPostImages[index.index]}}" alt="Image" class="post__image">
         </div>
     </div>
     <div class="pagination-container">
         <p class="page-num">Page <span th:text="${currentPage}"></span> of <span th:text="${totalPages}"></span></p>
         <div class="pagination dark">
-            <a class="page dark" th:href="@{/posts(page=1)}">First</a>
-            <span th:if="${currentPage > 1}"><a class="page dark" th:href="@{/posts(page=${currentPage - 1})}">Previous</a></span>
-            <span th:if="${currentPage < totalPages}"><a class="page dark" th:href="@{/posts(page=${currentPage + 1})}">Next</a></span>
-            <a class="page dark" th:href="@{/posts(page=${totalPages})}">Last</a>
+            <a class="page dark" th:href="@{/posts(page=1, query=${query})}">First</a>
+            <span th:if="${currentPage > 1}"><a class="page dark" th:href="@{/posts(page=${currentPage - 1}, q=${query})}">Previous</a></span>
+            <span th:if="${currentPage < totalPages}"><a class="page dark" th:href="@{/posts(page=${currentPage + 1}, q=${query})}">Next</a></span>
+            <a class="page dark" th:href="@{/posts(page=${totalPages}, q=${query})}">Last</a>
         </div>
     </div>
+    </div>
 </div>
+
+<!-- Модальное окно -->
+<body class="container4">
+<div id="addPostModal" class="modal container3">
+    <div class="modal-content container5">
+        <span class="close">&times;</span>
+        <h1>Add New Post</h1>
+        <form method="POST" enctype="multipart/form-data" action="/posts/add" name="newPost" th:object="${post}">
+            <div class="form-group profile-img">
+                <img class="preview" id="preview">
+                <input class="profile-input" type="file" name="file" oninput="previewImage(this.files[0])" accept="image/*">
+                <button type="button" onclick="deleteImage()">Delete Image</button>
+            </div>
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required th:field="*{header}" placeholder="Add Header"/>
+            </div>
+            <div class="form-group">
+                <label for="content">Content:</label>
+                <textarea id="content" name="content" rows="4" th:field="*{description}" placeholder="Add Description"></textarea>
+            </div>
+            <button class="button2" type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+</body>
 <script th:src="@{/js/post.js}"></script>
 <script th:inline="javascript">
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const currentUrl = window.location.href;
+    const jsessionidPattern = /;jsessionid=[^?]*/;
+
+    function deleteImage() {
+        var preview = document.getElementById('preview');
+        var image = document.getElementById('image');
+        preview.src = '';
+        image.value = null;
+    }
+
+    if (jsessionidPattern.test(currentUrl)) {
+      // Найти и удалить ;jsessionid
+      const cleanUrl = currentUrl.replace(jsessionidPattern, '');
+      // Перенаправить пользователя на чистый URL
+      window.history.replaceState({}, '', cleanUrl);
+    }
+  });
+
     var posts = /*[[${posts}]]*/ [];
     var userId = /*[[${login.id}]]*/;
+
+    var modal = document.getElementById("addPostModal");
+    var btn = document.getElementById("addPostBtn");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function previewImage(file) {
+        const reader = new FileReader();
+        reader.onload = () => document.getElementById('preview').src = reader.result;
+        reader.readAsDataURL(file);
+    }
 </script>
 </body>
 </html>

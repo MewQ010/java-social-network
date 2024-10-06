@@ -19,5 +19,4 @@ public class UserDTO {
     private ZonedDateTime verificationDate;
     private String login;
     private String password;
-
 }

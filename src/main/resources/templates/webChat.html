@@ -2,14 +2,46 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WebSocket Chat</title>
-    <style>
-        /* Add your CSS styles here */
-    </style>
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
 </head>
 <body>
+<div class="container2">
+    <header>
+        <div class="txt">
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
 
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
+
+            </div>
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
+            </div>
+
+        </div>
+
+    </header>
+</div>
 <div id="chat-page" class="hidden">
     <div class="chat-container">
         <div class="chat-header">
@@ -109,7 +141,6 @@
         messageArea.scrollTop = messageArea.scrollHeight;
     }
 
-    // Connect automatically when the page loads
     connect();
 
 

@@ -18,6 +18,7 @@ public class AmazonS3Config {
 
     @Value("${cloud.aws.credentials.secretKey}")
     private String secretKey;
+
     @Bean
     public AmazonS3 amazonS3Client() {
         Regions regions = Regions.EU_NORTH_1;

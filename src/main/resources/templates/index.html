@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<link th:href="@{/css/mainPage.css}" rel="stylesheet"/>
 	<script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
 	<title></title>
@@ -10,17 +10,34 @@
 <body>
 <div class="container">
 <header>
-	<div class="txt">			
-				<h1 class="logo">Назва/лого</h1>
-			<a th:href="@{/}" class="hdr">Головна</a>
-			<a href="" class="hdr">Розробники</a>
-			<a href="" class="hdr">Химич Володимир</a>
-		<a th:href="@{/posts}" class="hdr">Пости</a>
-			<a th:href="@{/search}" class="hdr">Пошук</a>
-			<a th:href="@{/chat}" class="hdr">Чати</a>
+	<div class="txt">
+			<h1 class="logo">ECHO</h1>
+		<div class="information">
+
+			<a th:href="@{/}" class="hdr header-head">
+				<p class="fa-solid fa-circle-info"></p>
+				<p class="hdr header-info"> Main</p>
+			</a>
+
+			<a th:href="@{/posts}" class="hdr header-head">
+				<p class="fa-solid fa-house"></p>
+				<p class="hdr header-info"> Posts</p>
+			</a>
+
+			<a th:href="@{/search}" class="hdr header-head">
+				<p class="fa-solid fa-magnifying-glass"></p>
+				<p class="hdr header-info"> Search</p>
+			</a>
+
+			<a th:href="@{/chat}" class="hdr header-head">
+				<p class="fa-regular fa-comment-dots"></p>
+				<p class="hdr header-info"> Messages</p>
+			</a>
+
+		</div>
 			<div class="but" id="but">
-				<a th:href="@{/users/login}" class="author">Вхід</a>
-				<a th:href="@{/users/register}" class="author">Реєстрація</a>
+				<a th:href="@{/users/login}" class="author">LogIn</a>
+				<a th:href="@{/users/register}" class="author">Register</a>
 			</div>
 
 		</div>
@@ -46,7 +63,7 @@
 			</div>
 					<div class="user">
 			<div class="ava"></div>
-						<a th:href="@{/profileMewQ}"><p class="name">Просянніков Олександр</p></a>
+						<a th:href="@{/profileMewQ}"><p class="name">Prosiannikov Oleksandr</p></a>
 		</div>
 		</div>
 
@@ -59,16 +76,12 @@
 			<hr class="if">
 
 		<div class="x">
-		<h1 class="logot">Назва/лого</h1>
+		<h1 class="logot">ECHO</h1>
 		<div class="txtfot">
-			<a href="" class="hdre">Головна</a>
-			<a href="" class="hdre">Розробники</a>
-			<a href="" class="hdre">Химич Володимир</a>
-			<a href="" class="hdre">укр</a>
 			</div>
 			<div class="txttfot">
-			<p class="pad">+380 098 407 7777</p>
-			<p class="pad">@name@gmail.com</p>
+			<p class="pad">+38 098 896 5388</p>
+			<p class="pad">prosik911@gmail.com</p>
 			</div>
 			</div>
 	</footer>

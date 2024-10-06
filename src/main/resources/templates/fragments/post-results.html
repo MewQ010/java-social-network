@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="container" id="resultsList" th:fragment="resultsList">
+    <div th:each="post, index : ${posts}" class="post__box">
+        <div class="post-container">
+            <div class="user_link">
+                <a th:href="@{/profile{login}(login=${userNames[__${index.index}__]})}" th:text="${userNames[__${index.index}__]}" class="username"></a>
+            </div>
+            <p th:text="${post.header}" class="post__header"></p>
+            <p th:text="${post.description}" class="post__descr"></p>
+            <p th:text="${post.time}" class="post__descr"></p>
+            <div class="user_link-2">
+                <button style="color: #ed0707;" th:class=" ${isLiked[__${index.index}__]} ? 'disL fa-solid fa-heart' : 'like fa-regular fa-heart'" th:id="'like-' + ${index.index}"></button>
+                <i th:id="'likes-' + ${index.index}" th:text="${likesList[__${index.index}__]}"></i>
+                <a th:href="@{/posts/comments/{id} (id=${post.id})}" class="login fa-regular fa-comment"></a>
+                <a th:href="@{'/report/post/' + ${post.id} + '/' + ${post.userId}}" class="login fa-regular fa-flag"></a>
+            </div>
+        </div>
+        <div th:if='${currentPostImages[index.index] != ""}'>
+            <img th:src="@{'data:image/jpeg;base64,' + ${currentPostImages[index.index]}}" alt="Image" class="post__image">
+        </div>
+    </div>
+    <div class="pagination-container">
+        <p class="page-num">Page <span th:text="${currentPage}"></span> of <span th:text="${totalPages}"></span></p>
+        <div class="pagination dark">
+            <a class="page dark" th:href="@{/posts(page=1, q=${query})}">First</a>
+            <span th:if="${currentPage > 1}"><a class="page dark" th:href="@{/posts(page=${currentPage - 1}, q=${query})}">Previous</a></span>
+            <span th:if="${currentPage < totalPages}"><a class="page dark" th:href="@{/posts(page=${currentPage + 1}, q=${query})}">Next</a></span>
+            <a class="page dark" th:href="@{/posts(page=${totalPages}, q=${query})}">Last</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

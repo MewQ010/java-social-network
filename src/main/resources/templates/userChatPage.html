@@ -2,11 +2,47 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Home</title>
     <link th:href="@{/css/userChat.css}" rel="stylesheet"/>
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
 </head>
 <body>
+<div class="container2">
+    <header>
+        <div class="txt">
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
 
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
+
+            </div>
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
+            </div>
+
+        </div>
+
+    </header>
+</div>
 <div class="container">
     <h2 class="posts__title">User Chats</h2>
     <div class="post__box box-1" th:each="user, index : ${userChat}">

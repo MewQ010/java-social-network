@@ -2,29 +2,49 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chat</title>
     <link th:href="@{/css/chat.css}" rel="stylesheet"/>
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
 </head>
 <html>
 <body>
 
-<header class="header-container">
-    <div class="txt">
-        <h1 class="logo">Назва/лого</h1>
-        <a th:href="@{/}" class="hdr">Головна</a>
-        <a href="" class="hdr">Розробники</a>
-        <a href="" class="hdr">Химич Володимир</a>
-        <a th:href="@{/posts}" class="hdr">Пости</a>
-        <a th:href="@{/search}" class="hdr">Пошук</a>
-        <a th:href="@{/chat}" class="hdr">Чати</a>
-        <div class="but" id="but">
-            <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
-            <a th:href="@{/posts/add}" class="author">Add Post</a>
+<div class="container2">
+    <header class="container2">
+        <div class="txt">
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
+
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
+
+            </div>
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
+            </div>
+
         </div>
 
-    </div>
-
-</header>
+    </header>
+</div>
 
 <div class="container">
 
@@ -32,7 +52,7 @@
     <div class="chat-header">
         <a class="video-call" th:href="@{/profile{login}(login=${receiver})}"><h3 th:text="${receiver}"></h3></a>
         <div class="post__links">
-            <a th:href="@{'/videoCall/' + ${receiver} + '/' + ${channel}}" class="login video-call">Call</a>
+            <a th:href="@{'/videoCall/' + ${receiver} + '/' + ${channel}}" class="login video-call fa-solid fa-phone"></a>
         </div>
     </div>
     <div class="chat-messages" id="chat-page">

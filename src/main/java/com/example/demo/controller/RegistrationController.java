@@ -1,55 +1,138 @@
 package com.example.demo.controller;
 
-import com.example.demo.event.RegistrationCompleteEvent;
+import com.example.demo.entity.PersonalData;
+import com.example.demo.entity.TelephoneCode;
 import com.example.demo.entity.User;
-import com.example.demo.request.RegistrationRequest;
-import com.example.demo.entity.VerificationToken;
-import com.example.demo.repository.VerificationTokenRepository;
+import com.example.demo.exception.*;
+import com.example.demo.repository.*;
+import com.example.demo.service.MailService;
 import com.example.demo.service.UserService;
-import com.example.demo.util.URLUtilis;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo.constants.TextConstants.*;
-@RestController
+import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.net.HttpCookie;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+
+@Controller
 @RequiredArgsConstructor
-@RequestMapping("/registration")
+@RequestMapping("/users")
 public class RegistrationController {
 
     private final UserService userService;
-    private final ApplicationEventPublisher publisher;
-    private final VerificationTokenRepository tokenRepository;
+    private final TelephoneCodeRepository telephoneCodeRepository;
+    private final UserRepository userRepository;
+    private final MailService mailService;
 
-    @PostMapping
-    public String registerUser(
-            @RequestBody RegistrationRequest registrationRequest, final HttpServletRequest request) {
-        User user = userService.registerUser(registrationRequest);
-        String email = registrationRequest.getEmail();
-        publisher.publishEvent(new RegistrationCompleteEvent(user, URLUtilis.applicationUrl(request), email));
-        return EMAIL_VERIFICATION_COMPLETE_MESSAGE;
+    @GetMapping("/register")
+    public String createUser(Model model) {
+
+        model.addAttribute("telephone_codes", telephoneCodeRepository.findAll());
+        model.addAttribute("telephone_code", new TelephoneCode());
+        model.addAttribute("users", new User());
+
+        return "registration";
     }
 
-    @GetMapping("/email/verification")
-    public String verifyEmail(@RequestParam("token") String token) {
-        VerificationToken verificationToken = tokenRepository.findByToken(token);
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute("users") User user, Model model) {
+        try{
+            userService.registerUser(user);
+            return "redirect:/users/login";
 
-        if (verificationToken.getUser().isVerified()) {
-            return ALREADY_VERIFIED_EMAIL_MESSAGE;
+        } catch (UserAlreadyExistsException | LocalDateException |
+                 TelephoneException | SpecialSymbolsException | SwearWordsException e) {
+
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("telephone_codes", telephoneCodeRepository.findAll());
+            model.addAttribute("telephone_code", new TelephoneCode());
+            model.addAttribute("user", user);
+
+            return "registration";
         }
+    }
 
-        String verificationResult = userService.validateToken(token);
+    @GetMapping("/login")
+    public String loginUser(Model model) {
+        model.addAttribute("users", new User());
+        return "login";
+    }
 
-        if (verificationResult.equalsIgnoreCase("valid")) {
-            return EMAIL_VERIFIED_SUCCESS_MESSAGE;
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@ModelAttribute("users") User user, Model model, HttpSession session, HttpServletResponse response) {
+        try {
+            userService.loginUser(user);
+
+            //TODO userRepository in userService
+            User oldUser = userRepository.findByLogin(user.getLogin()).get(0);
+
+            //TODO new function
+            if (oldUser == null) {
+                model.addAttribute("error", "User not found");
+                model.addAttribute("user", user);
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            }
+
+            Long userId = oldUser.getId();
+            session.setAttribute("userId", userId);
+
+            String jsessionId = session.getId();
+            Cookie jsessionCookie = new Cookie("JSESSIONID", jsessionId);
+            jsessionCookie.setPath("/");
+            jsessionCookie.setHttpOnly(true);
+            jsessionCookie.setMaxAge(60 * 60 * 3);
+
+            response.addCookie(jsessionCookie);
+            response.sendRedirect("/posts");
+
+            return new ResponseEntity<>("Login successful", HttpStatus.OK);
+
+        } catch (GeneralSecurityException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("user", user);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+    }
 
-        return INVALID_VERIFICATION_TOKEN_LOG_MESSAGE;
+
+    @GetMapping("/confirmEmail")
+    public String confirmEmail(Model model) {
+        model.addAttribute("confirmEmail", new PersonalData());
+        return "confirmEmail";
+    }
+
+    @PostMapping("/confirmEmail")
+    public String confirmEmail(@ModelAttribute("confirmEmail") PersonalData personalData, Model model) {
+        try {
+            mailService.sendMessage(personalData);
+            return "confirmEmailWaiting";
+        } catch (LoginException e) {
+            model.addAttribute("error", e.getMessage());
+            return "confirmEmail";
+        }
+    }
+
+    @GetMapping("/changePassword/{email}")
+    public String changePassword(Model model) {
+        model.addAttribute("user", new User());
+        return "changePassword";
+    }
+
+    @PostMapping("/changePassword/{email}")
+    public String changePassword(@PathVariable String email, @ModelAttribute("resetPassword") User user) {
+        userService.resetPassword(email, user);
+        return "redirect:/users/userProfile";
     }
 }

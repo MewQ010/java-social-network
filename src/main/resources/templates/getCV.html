@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link th:href="@{/css/cv.css}" rel="stylesheet"/>
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="txt">
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
+
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
+
+            </div>
+            <div class="but" id="but">
+                <a th:href="@{/users/login}" class="author">LogIn</a>
+                <a th:href="@{/users/register}" class="author">Register</a>
+            </div>
+
+        </div>
+
+    </header>
+    <!-- <hr class="ife"> -->
+    <!--    <div class="main">-->
+    <!--        <div class="h1main">-->
+    <!--            <h1 class="mainh1">Lorem ipsum dolor sit amet</h1>-->
+    <!--            <p class="pmain">This is a social network that was created by Oleksandr Prosiannikov</p>-->
+    <!--        </div>-->
+    <!--    </div>-->
+        <div class="post">
+            <div class="about1">
+                <div class="info"> 
+                    <div class="social">
+                        <a th:href="'https://github.com/' + ${cv.github_link}" class="social-img"><p class="fa-brands fa-github social-img fa-2xl"></p></a>
+                        <a th:href="'https://t.me/' + ${cv.telegram_link}" class="social-img"><p class="fa-brands fa-telegram social-img fa-2xl"></p></a>
+                        <a th:href="'https://www.instagram.com/' + ${cv.instagram_link}" class="social-img"><p class="fa-brands fa-instagram social-img fa-2xl"></p></a>
+                    </div>
+                    <div class="txt1">
+                        <p class="text__content" id="content" th:text="${cv.description}"></p>
+                    </div>
+                    <div class="user">
+                        <div class="ava"></div>
+                        <a th:href="@{/profile{login}(login=${cv_user.login})}"><p class="name" th:text="${cv_user.personalData.firstName} + ' ' + ${cv_user.personalData.lastName}"></p></a>
+                        <a class="button2" th:if='${user.login} == ${cv_user.login}' th:href="@{/cv/edit}">Edit CV</a>
+                    </div>
+                </div>
+
+            </div>
+            <div th:if="${image} != null" class="photo form-group profile-img">
+                <img th:src="'data:image/jpeg;base64,' + ${image}" alt="Image" class="post__image">
+            </div>
+
+        </div>
+
+    <!-- <div class="pols"></div> -->
+    <footer>
+        <hr class="if">
+
+        <div class="x">
+            <h1 class="logot">ECHO</h1>
+            <div class="txtfot">
+            </div>
+            <div class="txttfot">
+                <p class="pad">+38 098 896 5388</p>
+                <p class="pad">prosik911@gmail.com</p>
+            </div>
+        </div>
+    </footer>
+</div>
+<script th:inline="javascript">
+    var boolValue = /*[[${userId}]]*/ false;
+    var user = /*[[${user}]]*/ null;
+    var profileUrl = /*[[@{/users/userProfile}]]*/ '';
+
+function toggleContent() {
+    var contentDiv = document.getElementById('but');
+    if (boolValue && user) {
+        var link = document.createElement('a');
+        link.setAttribute('href', profileUrl);
+        link.textContent = /*[[${user.login}]]*/ '';
+        link.classList.add('author');
+        contentDiv.innerHTML = '';
+        contentDiv.appendChild(link);
+    }
+}
+toggleContent();
+</script>
+</body>
+</html>

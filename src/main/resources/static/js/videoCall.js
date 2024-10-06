@@ -64,7 +64,6 @@ const startVideo = async() => {
 const startAudio = async() => {
     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
     rtc.client.publish(rtc.localAudioTrack);
-//    rtc.localAudioTrack.play();
 }
 
 const stopVideo = () => {
@@ -79,8 +78,6 @@ const stopAudio = () => {
     rtc.client.unpublish(rtc.localAudioTrack);
 }
 
-
-//Toggle Camera
 
 btnCam.click(function() {
     if ($(this).hasClass('fa-video-camera')) {
@@ -97,7 +94,7 @@ btnCam.click(function() {
 
     }
 });
-//Toggle Microphone
+
 btnMic.click(function() {
     if ($(this).hasClass('fa-microphone')) {
         $(this).addClass('fa-microphone-slash');
@@ -115,12 +112,10 @@ btnMic.click(function() {
     }
 });
 
-//Toggle Join and Leave
-
 btnPlug.click(function() {
         rtc.client.leave();
         stopVideo();
         stopAudio();
-        var link = "https://localhost:8443/chat/" + receiver;
+        var link = "https://" + window.location.hostname + ":8443/chat/" + receiver;
         window.location.replace(link);
 });

@@ -26,7 +26,7 @@ public class AdminController {
     @GetMapping("/UserToAdmin{id}")
     public String makeAdmin(@PathVariable Long id, HttpSession session) {
         User admin = userRepository.findById((Long) session.getAttribute("userId")).get();
-        if(admin.getRole().equals(UserRole.OWNER)) {
+        if (admin.getRole().equals(UserRole.OWNER)) {
             User user = userRepository.findById(id).get();
             user.setRole(UserRole.ADMIN);
             userRepository.save(user);
@@ -39,7 +39,7 @@ public class AdminController {
     @GetMapping("/deleteUser{id}")
     public String deleteUser(@PathVariable Long id, HttpSession session) throws javax.security.auth.login.LoginException {
         User admin = userRepository.findById((Long) session.getAttribute("userId")).get();
-        if(admin.getRole().equals(UserRole.ADMIN) || admin.getRole().equals(UserRole.OWNER)) {
+        if (admin.getRole().equals(UserRole.ADMIN) || admin.getRole().equals(UserRole.OWNER)) {
             User user = userRepository.findById(id).get();
             reportMessageRepository.delete(reportMessageRepository.findByUserId(user.getId()).get());
             userDataRepository.delete(user.getPersonalData());
@@ -54,7 +54,7 @@ public class AdminController {
     @GetMapping("/clearDescription{id}")
     public String clearDescription(@PathVariable Long id, HttpSession session) throws javax.security.auth.login.LoginException {
         User admin = userRepository.findById((Long) session.getAttribute("userId")).get();
-        if(admin.getRole().equals(UserRole.ADMIN) || admin.getRole().equals(UserRole.OWNER)) {
+        if (admin.getRole().equals(UserRole.ADMIN) || admin.getRole().equals(UserRole.OWNER)) {
             User user = userRepository.findById(id).get();
             user.getPersonalData().setDescription("");
             userRepository.save(user);
@@ -67,10 +67,10 @@ public class AdminController {
     @GetMapping("/deletePost{id}")
     public String deletePost(@PathVariable Long id, HttpSession session) throws javax.security.auth.login.LoginException {
         User user = userRepository.findById((Long) session.getAttribute("userId")).get();
-        if(user.getRole().equals(UserRole.ADMIN) || user.getRole().equals(UserRole.OWNER)) {
+        if (user.getRole().equals(UserRole.ADMIN) || user.getRole().equals(UserRole.OWNER)) {
             Post post = postRepository.findById(id).get();
-            reportMessageRepository.delete(reportMessageRepository.findByUserId(post.getUserId()).isPresent()? reportMessageRepository.findByUserId(post.getUserId()).get() : null);
-            postRepository.delete(postRepository.findById(id).isPresent()? postRepository.findById(id).get() : null);
+            reportMessageRepository.delete(reportMessageRepository.findByUserId(post.getUserId()).isPresent() ? reportMessageRepository.findByUserId(post.getUserId()).get() : null);
+            postRepository.delete(postRepository.findById(id).isPresent() ? postRepository.findById(id).get() : null);
             return "redirect:/reports";
         } else {
             throw new javax.security.auth.login.LoginException("Bro you are not allowed to delete Posts");

@@ -50,4 +50,7 @@ public class User {
     private String password;
     @Column(name = "role")
     private UserRole role;
+    @OneToOne
+    @JoinColumn(name = "cv_id", referencedColumnName = "cv_id")
+    private CV cv;
 }

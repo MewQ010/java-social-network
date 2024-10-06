@@ -23,7 +23,7 @@ public class HomePageController {
             model.addAttribute("userId", true);
             model.addAttribute("user", userRepository.findById(userId).get());
         }
-        return "mainPage";
+        return "index";
     }
 
 }

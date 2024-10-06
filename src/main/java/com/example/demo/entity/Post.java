@@ -34,8 +34,8 @@ public class Post {
     private String description;
     @Column(name = "time")
     private String time;
-
-
+    @Column(name = "image")
+    private String image;
 
     @ElementCollection
     @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "post_id"))

@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Edit Student</title>
     <link th:href="@{/css/registration.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
-    <h1 class="text-center">Реєстрація</h1>
+    <h1 class="text-center">Registration</h1>
             <div class="registration__box">
 
                 <div class="text-center" style="color: red" th:if="${error != null}">
@@ -49,7 +50,11 @@
                     </div>
 
                     <div class="form-group">
-                        <input required type="text" minlength="4" maxlength="24" name="password" th:field="${users.password}" class="form-control" placeholder="Entry Password">
+                        <input required type="password" minlength="4" id="password" maxlength="24" name="password" th:field="${users.password}" class="form-control" placeholder="Entry Password">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="checkbox" onclick="showPassword()" th:value="unchecked" name="checkbox"> Show Password
                     </div>
 
                     <div class="box-footer">
@@ -59,12 +64,23 @@
                     </div>
                     
                     <div class="login">
-                        <a th:href="@{/users/login}" class="login">Вхід</a>
+                        <a th:href="@{/users/login}" class="login">LogIn</a>
                     </div>
 
                 </form>
 
             </div>
 </div>
+<script th:inline="javascript">
+    function showPassword() {
+        var password = document.getElementById("password");
+        if(password.type === "password") {
+            password.type = "text";
+        } else {
+            password.type = "password";
+        }
+    }
+
+</script>
 </body>
 </html>

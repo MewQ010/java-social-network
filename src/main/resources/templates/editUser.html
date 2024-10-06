@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Edit Student</title>
     <link th:href="@{/css/registration.css}" rel="stylesheet"/>
 </head>
@@ -12,10 +13,12 @@
       <h1 class="text-center">Update Account</h1>
       <div class="card-body">
 
-        <form enctype="multipart/form-data" action="editUser" method="POST" name="newPersonalData" th:object="${personalData}">
+        <form class="edit-form" enctype="multipart/form-data" action="/users/edit" method="POST" name="newPersonalData" th:object="${personalData}">
 
           <div class="form-group profile-img">
-            <input type="file" name="file">
+            <img class="preview" id="preview">
+            <input class="profile-input" name="file" type="file" oninput="previewImage(this.files[0])" accept="image/*">
+            <button type="button" onclick="deleteImage()">Delete Image</button>
           </div>
 
           <div class="form-group">
@@ -32,6 +35,10 @@
 
           <div class="form-group" id="dateOfBirth">
             <input type="date" name="dateOfBirth" th:value="${dateOfBirth}" class="form-control">
+          </div>
+
+          <div class="form-group" id="email">
+            <input type="hidden" name="email" th:value="${email}" class="form-control">
           </div>
 
           <div class="form-group">
@@ -62,5 +69,23 @@
     </div>
   </div>
 </div>
+<script>
+
+  var cvImage = /*[[${image}]]*/ '';
+  document.getElementById('preview').src = 'data:image/jpeg;base64,' + cvImage;
+
+  function deleteImage() {
+        var preview = document.getElementById('preview');
+        var image = document.getElementById('image');
+        preview.src = '';
+        image.value = null;
+   }
+
+  function previewImage(file) {
+    const reader = new FileReader();
+    reader.onload = () => document.getElementById('preview').src = reader.result;
+    reader.readAsDataURL(file);
+  }
+</script>
 </body>
 </html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link th:href="@{/css/cv.css}" rel="stylesheet"/>
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="txt">
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
+
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
+
+            </div>
+            <div class="but" id="but">
+                <a th:href="@{/users/login}" class="author">LogIn</a>
+                <a th:href="@{/users/register}" class="author">Register</a>
+            </div>
+
+        </div>
+
+    </header>
+    <!-- <hr class="ife"> -->
+<!--    <div class="main">-->
+<!--        <div class="h1main">-->
+<!--            <h1 class="mainh1">Lorem ipsum dolor sit amet</h1>-->
+<!--            <p class="pmain">This is a social network that was created by Oleksandr Prosiannikov</p>-->
+<!--        </div>-->
+<!--    </div>-->
+    <form method="POST" enctype="multipart/form-data" action="/cv/edit" name="newCV" th:object="${cv}">
+    <div class="post">
+        <div class="about1">
+            <div class="info">
+                <div class="social">
+                    <input class="social_id" type="text" id="github" name="title" required th:value="${github_link}" th:field="*{github_link}" placeholder="Write Github ID"/>
+                    <input class="social_id" type="text" id="telegram" name="title" required th:value="${telegram_link}" th:field="*{telegram_link}" placeholder="Write Telegram ID"/>
+                    <input class="social_id" type="text" id="instagram" name="title" required th:value="${instagram_link}" th:field="*{instagram_link}" placeholder="Write Instagram ID"/>
+                </div>
+                <div class="txt1">
+                    <textarea class="text__content" id="content" name="content" rows="5" th:value="${description}" th:field="*{description}" placeholder="Add Description"></textarea>
+                </div>
+                <div class="user user_edit">
+                    <div class="ava"></div>
+                    <a th:href="@{/profile{login}(login=${user.login})}"><p class="name" th:text="${user.personalData.firstName} + ' ' + ${user.personalData.lastName}"></p></a>
+                    <button class="button2" type="submit">Submit</button>
+                    <a th:href="@{/cv/delete-cv}" class="button2">Delete Your CV</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="photo form-group profile-img">
+            <img class="preview photo" id="preview">
+            <input class="profile-input" type="file" id="image" name="file" oninput="previewImage(this.files[0])" accept="image/*">
+            <button type="button" onclick="deleteImage()">Delete Image</button>
+        </div>
+    </div>
+    </form>
+
+    <!-- <div class="pols"></div> -->
+    <footer>
+        <hr class="if">
+
+        <div class="x">
+            <h1 class="logot">ECHO</h1>
+            <div class="txtfot">
+            </div>
+            <div class="txttfot">
+                <p class="pad">+38 098 896 5388</p>
+                <p class="pad">prosik911@gmail.com</p>
+            </div>
+        </div>
+    </footer>
+</div>
+<script th:inline="javascript">
+    var boolValue = /*[[${userId}]]*/ false;
+    var user = /*[[${user}]]*/ null;
+    var profileUrl = /*[[@{/users/userProfile}]]*/ '';
+    var cvImage = /*[[${image}]]*/ '';
+    document.getElementById('preview').src = 'data:image/jpeg;base64,' + cvImage;
+
+function deleteImage() {
+    var preview = document.getElementById('preview');
+    var image = document.getElementById('image');
+    preview.src = '';
+    image.value = null;
+}
+
+function previewImage(file) {
+    const reader = new FileReader();
+    reader.onload = () => document.getElementById('preview').src = reader.result;
+    reader.readAsDataURL(file);
+}
+
+function toggleContent() {
+    var contentDiv = document.getElementById('but');
+    if (boolValue && user) {
+        var link = document.createElement('a');
+        link.setAttribute('href', profileUrl);
+        link.textContent = /*[[${user.login}]]*/ '';
+        link.classList.add('author');
+        contentDiv.innerHTML = '';
+        contentDiv.appendChild(link);
+    }
+}
+toggleContent();
+</script>
+</body>
+</html>

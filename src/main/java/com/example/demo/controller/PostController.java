@@ -5,7 +5,8 @@ import com.example.demo.entity.Post;
 import com.example.demo.entity.User;
 import com.example.demo.exception.LoginException;
 import com.example.demo.repository.*;
-import com.example.demo.service.HomePageService;
+import com.example.demo.service.AWSService;
+import com.example.demo.service.PostService;
 import com.example.demo.service.UserService;
 import com.google.common.collect.Lists;
 import jakarta.servlet.http.HttpSession;
@@ -15,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -25,28 +28,45 @@ import java.util.*;
 public class PostController {
 
     private final UserService userService;
-    private final HomePageService homePageService;
+    private final PostService postService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final AWSService awsService;
+
+    @PostMapping("/search")
+    public String searchPosts(@RequestParam(value = "q", required = false) String query) {
+        return "redirect:/posts" + query;
+    }
 
     @GetMapping
-    public String postView(Model model, HttpSession session, Integer page) {
+    public String postView(@RequestParam(value = "q", required = false) String query, Model model, HttpSession session, @RequestParam(value = "page", defaultValue = "1") Integer page) throws IOException {
+
+        List<Post> allPosts;
+
+        if(query == null) {
+            allPosts = postRepository.findAll();
+        } else {
+            allPosts = postService.searchPosts(query);
+        }
+
+        model.addAttribute("users", allPosts);
+        model.addAttribute("query", query);
 
         Long id = (Long) session.getAttribute("userId");
-        session.setAttribute("userId", id);
-        List<Post> allPosts = homePageService.getAllPosts();
         List<String> userNames = new ArrayList<>();
         List<Integer> likesList = new ArrayList<>();
         List<Boolean> isLiked = new ArrayList<>();
 
         for (Post post : allPosts) {
             Optional<User> user = userRepository.findById(post.getUserId());
-            userNames.add(user.get().getLogin());
+            if (user.isPresent()) {
+                userNames.add(user.get().getLogin());
+            }
         }
 
         userNames = Lists.reverse(userNames);
-        List<Post> posts = Lists.reverse(postRepository.findAll());
+        List<Post> posts = Lists.reverse(allPosts);
 
         int pageSize = 5;
         int totalPages = (int) Math.ceil((double) posts.size() / pageSize);
@@ -57,24 +77,112 @@ public class PostController {
 
         int startIndex = (page - 1) * pageSize;
         int endIndex = Math.min(startIndex + pageSize, posts.size());
-        List<Post> currentPagePosts = posts.subList(startIndex, endIndex);
-        userNames = userNames.subList(startIndex, endIndex);
 
-        for(Post post : currentPagePosts) {
+        List<Post> currentPagePosts = (posts.size() > 0 && startIndex < posts.size())
+                ? posts.subList(startIndex, endIndex)
+                : new ArrayList<>();
+
+        List<String> currentPostImages = new ArrayList<>();
+        for (Post post : currentPagePosts) {
+            if (post.getPostImage() != null) {
+                String base64Image = awsService.getImageFromAWS(post.getPostImage());
+                currentPostImages.add(base64Image);
+            } else {
+                currentPostImages.add("");
+            }
+        }
+
+        userNames = userNames.subList(Math.min(startIndex, userNames.size()), Math.min(endIndex, userNames.size()));
+
+        for (Post post : currentPagePosts) {
             likesList.add(post.getLikeList().size());
             isLiked.add(post.getLikeList().contains(id));
         }
 
+        model.addAttribute("currentPostImages", currentPostImages);
         model.addAttribute("isLiked", isLiked);
         model.addAttribute("likesList", likesList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("posts", currentPagePosts);
         model.addAttribute("userNames", userNames);
-        model.addAttribute("login", userRepository.findById(id).get());
-
+        model.addAttribute("login", userRepository.findById(id).orElse(null));
+        model.addAttribute("post", new Post());
 
         return "postView";
+    }
+
+    @GetMapping("/search-post-fragment")
+    public String searchPostsFragment(@RequestParam(value = "q", required = false) String query, Model model, @RequestParam(value = "page", defaultValue = "1") Integer page, HttpSession session) throws IOException {
+
+        List<Post> allPosts;
+
+        if(query == null) {
+            allPosts = postRepository.findAll();
+        } else {
+            allPosts = postService.searchPosts(query);
+        }
+
+        model.addAttribute("users", allPosts);
+        model.addAttribute("query", query);
+
+        Long id = (Long) session.getAttribute("userId");
+        List<String> userNames = new ArrayList<>();
+        List<Integer> likesList = new ArrayList<>();
+        List<Boolean> isLiked = new ArrayList<>();
+
+        for (Post post : allPosts) {
+            Optional<User> user = userRepository.findById(post.getUserId());
+            if (user.isPresent()) {
+                userNames.add(user.get().getLogin());
+            }
+        }
+
+        userNames = Lists.reverse(userNames);
+        List<Post> posts = Lists.reverse(allPosts);
+
+        int pageSize = 5;
+        int totalPages = (int) Math.ceil((double) posts.size() / pageSize);
+
+        if (page == null || page < 1 || page > totalPages) {
+            page = 1;
+        }
+
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, posts.size());
+
+        List<Post> currentPagePosts = (posts.size() > 0 && startIndex < posts.size())
+                ? posts.subList(startIndex, endIndex)
+                : new ArrayList<>();
+
+        List<String> currentPostImages = new ArrayList<>();
+        for (Post post : currentPagePosts) {
+            if (post.getPostImage() != null) {
+                String base64Image = awsService.getImageFromAWS(post.getPostImage());
+                currentPostImages.add(base64Image);
+            } else {
+                currentPostImages.add("");
+            }
+        }
+
+        userNames = userNames.subList(Math.min(startIndex, userNames.size()), Math.min(endIndex, userNames.size()));
+
+        for (Post post : currentPagePosts) {
+            likesList.add(post.getLikeList().size());
+            isLiked.add(post.getLikeList().contains(id));
+        }
+
+        model.addAttribute("currentPostImages", currentPostImages);
+        model.addAttribute("isLiked", isLiked);
+        model.addAttribute("likesList", likesList);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("posts", currentPagePosts);
+        model.addAttribute("userNames", userNames);
+        model.addAttribute("login", userRepository.findById(id).orElse(null));
+        model.addAttribute("post", new Post());
+
+        return "fragments/post-results :: resultsList";
     }
 
     @GetMapping("/add")
@@ -89,8 +197,13 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public String addPost(@ModelAttribute("post") Post post, HttpSession session) {
+    public String addPost(@ModelAttribute("post") Post post, @RequestParam(value = "file", required = false) MultipartFile multipartFile, HttpSession session) throws IOException, javax.security.auth.login.LoginException {
         Long userId = (Long) session.getAttribute("userId");
+        User user = userRepository.findById(userId).get();
+        if(multipartFile != null && !multipartFile.isEmpty()) {
+            String profileImage = awsService.saveImageToAWS(multipartFile, "PostImage" + user.getLogin());
+            post.setPostImage(profileImage);
+        }
         post.setUserId(userId);
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().getTime());
         post.setTime(time);

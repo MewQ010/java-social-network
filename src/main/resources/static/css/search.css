@@ -34,7 +34,6 @@ body {
   border-radius: 10px;
   margin: 0 auto;
   background-color: #222326;
-  width: 636px;
   padding-bottom: 5px;
   margin-top: 20px;
 }
@@ -47,9 +46,9 @@ body {
 }
 
 .post__header {
-    max-width: 374px;
   font-weight: 600;
-  overflow-wrap: break-word !important;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   margin-left: 20px;
   margin-right: 20px;
   margin-bottom: 5px;
@@ -58,23 +57,22 @@ body {
 }
 
 .post__descr {
-    max-width: 374px;
-    overflow-wrap: break-word !important;
-    margin-top: 5px;
-    margin-right: 20px;
-    margin-left: 20px;
-    color: #ababad;
-    font-size: 18px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  margin-top: 5px;
+  margin-right: 20px;
+  margin-left: 20px;
+  color: #ababad;
+  font-size: 18px;
 }
-
 
 .user_link {
   text-decoration: none;
     font-weight: bold;
     font-size: 18px;
     padding-top: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
     margin-bottom: 5px;
 }
 
@@ -131,8 +129,8 @@ border: 2px solid white;
 
 .profile__img {
   border-radius: 100px;
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
 }
 
 .profile-img {
@@ -160,10 +158,6 @@ border: 2px solid white;
 
 .link-1 {
 padding-top: 15px;
-}
-
-.link-2{
-  padding-top: 5px;
 }
 
 .buttons {
@@ -317,19 +311,6 @@ padding-top: 15px;
 }
 
 
-
-.like {
- background-color: inherit;
- border: none;
- font-size: 25px
-}
-
-.disL {
- background-color: inherit;
- border: none;
- font-size: 25px
-}
-
 .info {
  display: flex;
 }
@@ -339,30 +320,18 @@ padding-top: 15px;
  gap: 10px;
 }
 
-.post__box {
-        display: flex;
-        justify-content: space-between;
-}
-
-.post__image {
-    width: 222px;
-    height: 222px;
-    border-end-end-radius: 10px;
-    border-start-end-radius: 10px;
-}
-
-.user_link-2 {
+.user__links {
     display: flex;
+    align-items: center;
 }
+
 
 
 @media (max-width: 768px) {
     .container {
         width: 100%;
-        box-sizing: border-box;
-    }
-    .container-4 {
         padding: 0 5px;
+        box-sizing: border-box;
     }
     .txt {
         align-items: center;
@@ -392,24 +361,8 @@ padding-top: 15px;
 }
 
 @media (max-width: 430px) {
-    .post__image {
-        width: 170px;
-        height: 170px;
-    }
-    .username {
-        font-size: 20px;
-    }
-    .post__header {
-        font-size: 18px;
-    }
-    .post__descr {
-        font-size: 15px;
-    }
     .post__box {
         width: 370px;
-    }
-    .post-container {
-        max-width: 180px;
     }
     .logo {
         font-size: 20px;
@@ -423,7 +376,7 @@ padding-top: 15px;
     }
 
     .but {
-        margin-left: 10px;
+        margin-left: 15px;
     }
 
     .container3 {
@@ -449,6 +402,8 @@ padding-top: 15px;
 .container3, container5 {
     display: flex;
   width: 610px;
+  margin: 50px auto;
+  padding: 20px;
   background-color: #333;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -468,11 +423,20 @@ label {
   margin-bottom: 5px;
 }
 
+.post__image {
+    width: 222px;
+    height: 222px;
+    border-end-end-radius: 10px;
+    border-start-end-radius: 10px;
+}
+
+.post__box {
+    display: flex;
+}
 
 input[type="text"],
 textarea {
-  display: flex;
-  margin: 15px auto 0 auto;
+  width: 97%;
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -534,3 +498,176 @@ textarea {
             text-decoration: none;
             cursor: pointer;
         }
+
+
+html {
+  box-sizing: border-box;
+}
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
+body {
+  color: #fff;
+  background-color: #16171b;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 500px; /* Ограничение максимальной ширины контейнера */
+  margin: 0 auto;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text-center {
+  font-size: 40px;
+  margin-bottom: 30px;
+}
+
+.form-control {
+  margin-bottom: 15px;
+  padding: 16px;
+  width: 90%; /* Делаем ширину 90% от контейнера */
+  max-width: 100%; /* Ограничиваем максимальную ширину */
+  background-color: #222326;
+  border-radius: 8px;
+  border: 1px solid #444;
+  color: #ababad;
+}
+
+.btn {
+  margin-top: 20px;
+  font-size: 18px;
+  padding: 10px 0;
+  width: 90%; /* Ширина кнопки равна ширине родителя */
+  border-radius: 5px;
+  background-color: #333;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.login {
+  font-size: 16px;
+  color: #ababad;
+  text-decoration: none;
+  margin-top: 20px;
+}
+
+.login:hover {
+  text-decoration: underline;
+}
+
+.email__box {
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  background-color: #222326;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #ababad;
+  width: 90%;
+  max-width: 100%; /* Ограничиваем максимальную ширину */
+  margin: 0 auto;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+.email__text {
+  padding: 24px 35px;
+  text-align: center;
+}
+
+.profile-img {
+    display: inline-grid;
+    margin-bottom: 20px;
+}
+
+.preview {
+    margin: 0 auto;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #fff;
+    border-radius: 100px;
+    margin-bottom: 10px;
+}
+
+textarea {
+  width: 90%;
+  max-width: 100%; /* Ограничиваем максимальную ширину */
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #222326;
+  color: #fff;
+  font-size: 16px;
+  resize: none;
+}
+
+.edit-form {
+    margin-bottom: 25px;
+}
+
+.container2 {
+  margin-top: 30px;
+  width: 1440px;
+  margin: 0 auto;
+}
+
+.information{
+    padding-top: 10px;
+    display: flex;
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+  .text-center {
+    font-size: 28px;
+  }
+
+  .form-control,
+  .btn,
+  .login,
+  .email__box,
+  textarea {
+    width: 90%;
+    max-width: 100%;
+  }
+
+  .btn {
+    font-size: 16px;
+    padding: 10px 0;
+  }
+
+  .login {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-center {
+    font-size: 40px;
+  }
+
+  .form-control,
+  .btn,
+  .login,
+  .email__box,
+  textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .btn {
+    font-size: 18px;
+    padding: 10px 0;
+  }
+
+  .login {
+    font-size: 20px;
+  }
+}

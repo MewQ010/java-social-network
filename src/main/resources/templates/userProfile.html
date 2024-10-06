@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Home</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -14,23 +15,41 @@
 
 <div class="header">
 
-    <header class="header-container">
+    <div class="container2">
+    <header>
         <div class="txt">
-            <h1 class="logo">Назва/лого</h1>
-            <a th:href="@{/}" class="hdr">Головна</a>
-            <a href="" class="hdr">Розробники</a>
-            <a href="" class="hdr">Химич Володимир</a>
-            <a th:href="@{/posts}" class="hdr">Пости</a>
-            <a th:href="@{/search}" class="hdr">Пошук</a>
-            <a th:href="@{/chat}" class="hdr">Чати</a>
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
+
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
+
+            </div>
             <div class="but" id="but">
                 <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
-                <a th:href="@{/posts/add}" class="author">Add Post</a>
             </div>
 
         </div>
 
     </header>
+    </div>
 
     <div class="container">
         <div class="user__info">
@@ -43,6 +62,7 @@
             <p class="user__name" th:text="${user.personalData.firstName} + ' ' + ${user.personalData.lastName}"></p>
             <p class="user__email" th:text="${user.personalData.description}"></p>
             <a th:href="@{/users/editUser}" class="login2">Edit User</a>
+            <a th:href="@{/cv/{login}(login=${user.login})}" class="login2">CV</a>
             <a th:if="${role == true}" th:href="@{/reports}" class="login2">Reports</a>
         </div>
     </div>
@@ -52,19 +72,25 @@
     <p class="user__login">User Posts</p>
     <div class="user__posts" th:each="post, index : ${posts}">
         <div class="post__box">
+            <div class="post-container">
             <div class="user_link">
                 <a th:href="@{/profile{login}(login=${user.login})}" th:text="${user.login}" class="username"></a>
             </div>
-            <p class="post__text" th:text="${post.header}"></p>
+            <p class="post__header" th:text="${post.header}"></p>
             <p class="post__descr" th:text="${post.description}"></p>
+            <p th:text="${post.time}" class="post__descr"></p>
             <div class="post__links">
+                <button style="color: #ed0707;" th:class=" ${isLiked[__${index.index}__]} ? 'disL fa-solid fa-heart' : 'like fa-regular fa-heart'" th:id="'like-' + ${index.index}"></button>
+                <i th:id="'likes-' + ${index.index}" th:text="${likesList[__${index.index}__]}"></i>
                 <a th:href="@{'/posts/comments/' + ${post.id}}" class="login fa-regular fa-comment"></a>
                 <form action="/posts/delete" method="post" class="chat-input">
                     <input type="hidden" name="postId" th:value="${post.id}">
                     <button class="login fa-solid fa-trash" type="submit"></button>
                 </form>
-                <button style="color: #ed0707;" th:class=" ${isLiked[__${index.index}__]} ? 'disL fa-solid fa-heart' : 'like fa-regular fa-heart'" th:id="'like-' + ${index.index}"></button>
-                <i th:id="'likes-' + ${index.index}" th:text="${likesList[__${index.index}__]}"></i>
+            </div>
+            </div>
+            <div th:if='${currentPostImages[index.index] != ""}'>
+                <img th:src="@{'data:image/jpeg;base64,' + ${currentPostImages[index.index]}}" alt="Image" class="post__image">
             </div>
         </div>
     </div>

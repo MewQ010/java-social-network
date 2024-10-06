@@ -26,6 +26,8 @@ public class UserRegistrationSecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/registration/**")
                 .permitAll()
+                .requestMatchers("/swagger-ui/**")
+                .permitAll()
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/users/**")

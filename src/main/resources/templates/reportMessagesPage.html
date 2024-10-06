@@ -2,25 +2,42 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Title</title>
     <link th:href="@{/css/reportMessage.css}" rel="stylesheet"/>
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<div class="header">
-
-    <header class="header-container">
+<div class="container2">
+    <header>
         <div class="txt">
-            <h1 class="logo">Назва/лого</h1>
-            <a th:href="@{/}" class="hdr">Головна</a>
-            <a href="" class="hdr">Розробники</a>
-            <a href="" class="hdr">Химич Володимир</a>
-            <a th:href="@{/posts}" class="hdr">Пости</a>
-            <a th:href="@{/search}" class="hdr">Пошук</a>
-            <a th:href="@{/chat}" class="hdr">Чати</a>
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
+
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
+
+            </div>
             <div class="but" id="but">
                 <a th:href="@{/users/userProfile}" th:text="${admin.login}" class="author"></a>
-                <a th:href="@{/posts/add}" class="author">Add Post</a>
             </div>
 
         </div>
@@ -37,9 +54,6 @@
                 <p class="report-entity" th:text="${report.entity}"></p>
                 <p class="report-content" th:text="${report.content}"></p>
                 <a class="complete-report" th:href="@{'/reportMessage' + ${report.id} + '/' + ${report.entity} + '/' + ${report.entityId} + '/' + ${report.userId}}">Complete Report</a>
-                <form th:action="@{'/reportMessage' + ${report.id} + '/' + ${report.entity} + '/' + ${report.entityId}}" method="POST">
-                    <button type="submit" class="complete-report">Delete Report</button>
-                </form>
             </div>
         </div>
     </div>

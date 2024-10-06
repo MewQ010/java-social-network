@@ -2,19 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Edit Student</title>
     <link th:href="@{/css/registration.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
-    <h1 class="text-center">Підтвердіть пошту</h1>
+    <h1 class="text-center">Confirm your Email</h1>
     <div class="registration__box">
             <div class="email__box">
-                <p class="email__text">Ми надіслали Вам повідомлення для підтвердження дійсності акаунта. Будь ласка, перевірте пошту.</p>
+                <p class="email__text">We have sent you a message to confirm the validity of the account. Please check your Email.</p>
             </div>
             <div class="login">
-                <a th:href="@{/users/login}" class="login">Вхід /</a>
-                <a th:href="@{/users/register}" class="login"> Реєстрація</a>
+                <a th:href="@{/users/login}" class="login">LogIn /</a>
+                <a th:href="@{/users/register}" class="login"> Registration</a>
             </div>
 
     </div>

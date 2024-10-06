@@ -91,6 +91,7 @@ public class ChatController {
             }
         }
         model.addAttribute("base64Images", profileImages);
+        model.addAttribute("user", userRepository.findById(userId).get());
 
         return "userChatPage";
     }

@@ -1,31 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>User Search Form</title>
-    <link th:href="@{/css/search.css}" rel="stylesheet"/>
-    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
-    <script>
-        function searchUsers() {
-            const query = document.getElementById("searchInput").value;
-            fetch(`/search-fragment?q=${query}`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById("results").innerHTML = html;
-                });
-        }
-    </script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div class="container" id="container">
-<h1 class="text-center">Enter User Login</h1>
-<form action="/search" method="post">
-    <input type="text" id="searchInput" th:value="${query}" name="name" placeholder="Search users..." class="form-control" oninput="searchUsers()"/>
-</form>
-</div>
 
-<div class="container" id="results">
+<div class="container" id="resultsList" th:fragment="resultsList">
     <div class="post__box box-1" th:each="user, index : ${users}">
         <div  class="profile__img-box box-1">
             <a th:href="@{profile{login}(login=${user.login})}" class="user_link">

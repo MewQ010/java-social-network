@@ -18,7 +18,7 @@ public class UserValidator {
     public void isValid(PersonalData personalData) {
         String firstName = swearWordsValidator.isValid( notNullValidator.isValid( personalData.getFirstName()) );
         String lastName = swearWordsValidator.isValid( notNullValidator.isValid(personalData.getLastName()) );
-        emailValidator.isValid(personalData.getEmail());
+//        emailValidator.isValid(personalData.getEmail());
         specialSymbolsValidator.isValid(firstName);
         specialSymbolsValidator.isValid(lastName);
         localDateValidator.isValid(personalData.getDateOfBirth());

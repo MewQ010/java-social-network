@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
   List<User> findByLogin(String login);
-
   User findByPersonalData(PersonalData personalData);
   boolean existsByLogin(String login);
+  List<User> findByLoginStartingWithIgnoreCase(String login);
+
 }

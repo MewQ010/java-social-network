@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Style.css -->
     <link th:href="@{/css/videoCall.css}" rel="stylesheet"/>
     <!-- Latest compiled and minified CSS -->
@@ -22,28 +22,47 @@
             referrerpolicy="no-referrer"
     />
     <title>Agora One-to-One Video Call</title>
+    <script src="https://kit.fontawesome.com/bb00e45793.js" crossorigin="anonymous"></script>
 </head>
 <div class="body-container">
 <body>
-<header class="header-container">
-    <div class="txt">
-        <h1 class="logo">Назва/лого</h1>
-        <a th:href="@{/}" class="hdr">Головна</a>
-        <a href="" class="hdr">Розробники</a>
-        <a href="" class="hdr">Химич Володимир</a>
-        <a th:href="@{/posts}" class="hdr">Пости</a>
-        <a th:href="@{/search}" class="hdr">Пошук</a>
-        <a th:href="@{/chat}" class="hdr">Чати</a>
-        <div class="but" id="but">
-            <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
-            <a th:href="@{/posts/add}" class="author">Add Post</a>
+<div class="container2">
+    <header>
+        <div class="txt">
+            <h1 class="logo">ECHO</h1>
+            <div class="information">
+
+                <a th:href="@{/}" class="hdr header-head">
+                    <p class="fa-solid fa-circle-info"></p>
+                    <p class="hdr header-info"> Main</p>
+                </a>
+
+                <a th:href="@{/posts}" class="hdr header-head">
+                    <p class="fa-solid fa-house"></p>
+                    <p class="hdr header-info"> Posts</p>
+                </a>
+
+                <a th:href="@{/search}" class="hdr header-head">
+                    <p class="fa-solid fa-magnifying-glass"></p>
+                    <p class="hdr header-info"> Search</p>
+                </a>
+
+                <a th:href="@{/chat}" class="hdr header-head">
+                    <p class="fa-regular fa-comment-dots"></p>
+                    <p class="hdr header-info"> Messages</p>
+                </a>
+
+            </div>
+            <div class="but" id="but">
+                <a th:href="@{/users/userProfile}" th:text="${user.login}" class="author"></a>
+            </div>
+
         </div>
 
-    </div>
-
-</header>
-<div class="d-flex justify-content-center w-100 p-2 container">
-    <div class="p-2 rounded shadow-lg position-relative video-box">
+    </header>
+</div>
+<div class="d-flex justify-content-center w-100 p-2 camera container">
+    <div class="p-2 rounded shadow-lg position-relative camera video-box">
         <div
                 id="local"
                 class="d-flex p-1 justify-content-center rounded position-absolute local shadow-lg"
